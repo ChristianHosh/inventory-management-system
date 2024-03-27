@@ -4,16 +4,15 @@ import com.chris.ims.entity.exception.BxException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface EntityFacade<T extends AbstractEntity> {
+public interface AbstractEntityFacade<T extends AbstractEntity> {
 
   default T findById(Long id) {
     return getRepository().findById(id)
             .orElseThrow(BxException.xNotFound(getEntityClass(), id));
   }
 
-  default T save(T entity) {
+  default <S extends T> T save(S entity) {
     return getRepository().save(entity);
   }
 
@@ -21,7 +20,7 @@ public interface EntityFacade<T extends AbstractEntity> {
     getRepository().deleteById(id);
   }
 
-  default void delete(T entity) {
+  default <S extends T> void delete(S entity) {
     getRepository().delete(entity);
   }
 
@@ -33,7 +32,11 @@ public interface EntityFacade<T extends AbstractEntity> {
     return getRepository().findAll(pageable);
   }
 
-  JpaRepository<T, Long> getRepository();
+  default Page<T> searchQuery(String query, Pageable pageable) {
+    return getRepository().searchQuery(query, pageable);
+  }
+
+  AbstractEntityRepository<T> getRepository();
 
   Class<T> getEntityClass();
 }

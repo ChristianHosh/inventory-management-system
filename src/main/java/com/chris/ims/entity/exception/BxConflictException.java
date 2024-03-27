@@ -1,8 +1,8 @@
-package com.nomad.socialspring.error;
+package com.chris.ims.entity.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class BxConflictException extends BxException {
+class BxConflictException extends BxException {
   protected BxConflictException(String message) {
     super(message);
   }

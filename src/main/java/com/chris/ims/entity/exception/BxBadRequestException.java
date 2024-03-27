@@ -1,8 +1,8 @@
-package com.nomad.socialspring.error;
+package com.chris.ims.entity.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class BxBadRequestException extends BxException {
+class BxBadRequestException extends BxException {
   protected BxBadRequestException(String message) {
     super(message);
   }

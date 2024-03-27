@@ -1,6 +1,6 @@
-package com.nomad.socialspring.error;
+package com.chris.ims.entity.exception;
 
-public class BxSevereException extends BxException {
+class BxSevereException extends BxException {
 
   protected BxSevereException(String message) {
     super(message);

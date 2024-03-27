@@ -1,7 +1,20 @@
 package com.chris.ims.contact;
 
+import jakarta.validation.constraints.NotBlank;
+
+import java.io.Serializable;
+
 /**
- * DTO for {@link com.chris.ims.contact.Contact}
+ * Request DTO for {@link Contact}
  */
-public record ContactRequest() {
+record ContactRequest(
+        @NotBlank(message = "code can't be blank")
+        String code,
+
+        @NotBlank(message = "name can't be blank")
+        String name,
+
+        Boolean isEmployee
+) implements Serializable {
+
 }
