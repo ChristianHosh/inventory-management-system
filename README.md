@@ -35,7 +35,7 @@
 <hr/>
 <div>
   <h3>The following diagram shows the Entity Relations Diagram</h3>
-  <img src="https://github.com/ChristianHosh/inventory-management-system/assets/104357056/8319559a-df3e-4734-9c76-03d191199016" alt="IMS-ERD" />
+  <img src="https://github.com/ChristianHosh/inventory-management-system/assets/104357056/4109e58e-1a4c-4e2c-9e19-c5d863b5045e" alt="IMS-ERD" />
 </div>
 <br/>
 <hr/>
