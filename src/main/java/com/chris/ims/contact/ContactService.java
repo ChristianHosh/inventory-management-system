@@ -1,6 +1,6 @@
 package com.chris.ims.contact;
 
-import com.chris.ims.entity.exception.BxException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -15,46 +15,43 @@ class ContactService {
     return contactFacade.searchQuery(page, size, query, group).map(Contact::toDto);
   }
 
-  public ContactDto createContact(ContactRequest request) {
-    if (request.name() == null)
-      throw BxException.badRequest(Contact.class, "name is required");
-    if (request.code() == null)
-      throw BxException.badRequest(Contact.class, "code is required");
-    if (request.isEmployee() == null)
-      throw BxException.badRequest(Contact.class, "isEmployee is required");
-
-    Contact contact = new Contact()
-            .setIsEmployee(request.isEmployee())
-            .setCode(request.code())
-            .setName(request.name());
-
-    return contactFacade.save(contact).toDto();
-  }
-
   public ContactDto getContact(Long id) {
     return contactFacade.findById(id).toDto();
   }
 
-  public ContactDto updateContact(Long id, ContactRequest request) {
-    Contact contact = contactFacade.findById(id)
-            .setIsEmployee(request.isEmployee())
-            .setCode(request.code())
+  @Transactional
+  public ContactDto createContact(ContactRequest request) {
+    Contact contact = new Contact()
+            .setType(request.type())
             .setName(request.name());
 
     return contactFacade.save(contact).toDto();
   }
 
+  @Transactional
+  public ContactDto updateContact(Long id, ContactRequest request) {
+    Contact contact = contactFacade.findById(id)
+            .setType(request.type())
+            .setName(request.name());
+
+    return contactFacade.save(contact).toDto();
+  }
+
+  @Transactional
   public ContactDto patchContact(Long id, ContactRequest request) {
     Contact contact = contactFacade.findById(id);
 
-    if (request.code() != null)
-      contact.setCode(request.code());
     if (request.name() != null)
       contact.setName(request.name());
-    if (request.isEmployee() != null)
-      contact.setIsEmployee(request.isEmployee());
+    if (request.type() != null)
+      contact.setType(request.type());
 
     return contactFacade.save(contact).toDto();
 
+  }
+
+  public ContactDto deleteContact(Long id) {
+    Contact contact = contactFacade.findById(id);
+    return contactFacade.delete(contact).toDto();
   }
 }

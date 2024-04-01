@@ -21,7 +21,7 @@
 # ----------------------------------------------------------------------------
 # Apache Maven Wrapper startup batch script, version 3.2.0
 #
-# Required ENV vars:
+# RequireAll ENV vars:
 # ------------------
 #   JAVA_HOME - location of a JDK home dir
 #

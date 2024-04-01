@@ -11,7 +11,7 @@ public interface AbstractEntityRepository<T extends AbstractEntity> extends JpaR
 
   @Query("""
           select e from #{#entityName} e
-          where :query ilike concat('%', e.keyword, '%')
+          where e.keyword ilike concat('%', :query, '%')
           """)
   Page<T> searchQuery(String query, Pageable pageable);
 

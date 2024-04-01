@@ -9,10 +9,10 @@ import lombok.Getter;
 @Getter
 public class ContactDto extends SpecEntityDto {
 
-  private final Boolean isEmployee;
+  private final ContactType type;
 
   public ContactDto(Contact entity) {
     super(entity);
-    this.isEmployee = entity.getIsEmployee();
+    this.type = entity.getType();
   }
 }

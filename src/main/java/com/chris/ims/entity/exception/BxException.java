@@ -119,6 +119,15 @@ public class BxException extends RuntimeException {
     return new BxSevereException(message);
   }
 
+  public static BxException hardcoded(String message, HttpStatus status) {
+    return new BxSevereException(message) {
+      @Override
+      public HttpStatus getStatus() {
+        return status;
+      }
+    };
+  }
+
   @NotNull
   @Contract("_, _ -> new")
   public static BxException hardcoded(String message, Object value) {

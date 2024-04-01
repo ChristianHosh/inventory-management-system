@@ -16,12 +16,9 @@ public interface AbstractEntityFacade<T extends AbstractEntity> {
     return getRepository().save(entity);
   }
 
-  default void deleteById(Long id) {
-    getRepository().deleteById(id);
-  }
-
-  default <S extends T> void delete(S entity) {
+  default <S extends T> S delete(S entity) {
     getRepository().delete(entity);
+    return entity;
   }
 
   default Page<T> findPage(int page, int size) {
@@ -34,6 +31,10 @@ public interface AbstractEntityFacade<T extends AbstractEntity> {
 
   default Page<T> searchQuery(String query, Pageable pageable) {
     return getRepository().searchQuery(query, pageable);
+  }
+
+  default Page<T> searchQuery(String query, int page, int size) {
+    return searchQuery(query, PageRequest.of(page, size));
   }
 
   AbstractEntityRepository<T> getRepository();

@@ -11,7 +11,7 @@ import org.hibernate.proxy.HibernateProxy;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.StringJoiner;
 
@@ -30,20 +30,16 @@ public abstract class AbstractEntity {
 
   @CreationTimestamp
   @Column(name = "created_on", nullable = false, updatable = false)
-  private Instant createdOn;
+  private LocalDateTime createdOn;
 
   @UpdateTimestamp
   @Column(name = "updated_on", nullable = false)
-  private Instant updatedOn;
+  private LocalDateTime updatedOn;
 
   @Column(name = "keyword", nullable = false, length = 555)
   private String keyword;
 
   public String getName() {
-    return "";
-  }
-
-  public String getCode() {
     return "";
   }
 
@@ -59,21 +55,28 @@ public abstract class AbstractEntity {
       }
       this.keyword = keywordJoiner.toString();
     } catch (Exception e) {
-      log.error("Exception while generating keywords: " + e.getMessage(), e);
+      log.error("exception while generating keywords: " + e.getMessage(), e);
     }
   }
 
-  private void generateKeywordsFromClass(@NotNull Class<?> currentClass, StringJoiner keywordJoiner) throws Exception {
+  @PostLoad
+  protected void postLoad() {
+    log.debug("loaded: " + this);
+  }
+
+
+  private <T> void generateKeywordsFromClass(@NotNull Class<T> currentClass, StringJoiner keywordJoiner) throws IllegalAccessException {
     for (Field field : currentClass.getDeclaredFields()) {
+      field.setAccessible(true);
       if (field.isAnnotationPresent(Keyword.class)) {
         if (field.getType().isAssignableFrom(SpecEntity.class)) {
           SpecEntity specKeyword = (SpecEntity) field.get(this);
-          if (specKeyword != null) {
-            keywordJoiner.add(specKeyword.getCode());
+          if (specKeyword != null)
             keywordJoiner.add(specKeyword.getName());
-          }
         } else {
-          keywordJoiner.add(field.get(this).toString());
+          Object object = field.get(this);
+          if (object != null)
+            keywordJoiner.add(object.toString());
         }
       }
     }
@@ -86,8 +89,9 @@ public abstract class AbstractEntity {
     Class<?> oEffectiveClass = object instanceof HibernateProxy proxy ? proxy.getHibernateLazyInitializer().getPersistentClass() : object.getClass();
     Class<?> thisEffectiveClass = this instanceof HibernateProxy proxy ? proxy.getHibernateLazyInitializer().getPersistentClass() : this.getClass();
     if (thisEffectiveClass != oEffectiveClass) return false;
-    AbstractEntity that = (AbstractEntity) object;
-    return getId() != null && Objects.equals(getId(), that.getId());
+    if (object instanceof AbstractEntity entity)
+      return Objects.equals(getId(), entity.getId());
+    return false;
   }
 
   @Override
@@ -97,6 +101,6 @@ public abstract class AbstractEntity {
 
   @Override
   public String toString() {
-    return String.format("[%d] [%s]: %s, %s ", getId(), getCode(), getClass().getSimpleName(), getName());
+    return String.format("%s [%d]: %s ", getClass().getSimpleName(), getId(), getName());
   }
 }
