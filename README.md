@@ -130,7 +130,7 @@
       <li><code>item</code>: <a href="#unit">(Unit)</a> references the sold item unit of measurement for the quantity</li>
       <li><code>quantity</code>: (Double) the number of items sold</li>
       <li><code>unitPrice</code>: (Double) the price per unit</li>
-      <li><code>totalPrice</code>: (Doubke) the calculated price of (quantity * unitPrice)</li>
+      <li><code>totalPrice</code>: (Double) the calculated price of (quantity * unitPrice)</li>
    </ul>
   </div>
 </div>
