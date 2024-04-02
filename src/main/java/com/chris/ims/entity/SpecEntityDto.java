@@ -7,7 +7,8 @@ import lombok.Getter;
  */
 @Getter
 public abstract class SpecEntityDto extends AbstractEntityDto {
-  String name;
+
+  private final String name;
 
   protected SpecEntityDto(SpecEntity entity) {
     super(entity);
