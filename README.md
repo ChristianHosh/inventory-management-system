@@ -12,6 +12,8 @@
 <div>
   <h3>API Documentation available on Google Sheets</h3>
   <a href="https://docs.google.com/spreadsheets/d/1ZpMwW9f5QEL47GuOURc2nhgphvwFFmVGspfF8CfqkVE/edit?usp=sharing">Click here to view API documentation</a>
+  <h3>API Documentation available on Swagger Editor</h3>
+  <a href="api-docs.yaml">Click here to view API documentation</a>
 </div>
 <br/>
 <hr/>
