@@ -1,0 +1,1682 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:8080
+  description: Generated server url
+paths:
+  /warehouses/{id}:
+    get:
+      tags:
+      - warehouse-controller
+      operationId: getWarehouse
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: successful
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/WarehouseDto'
+        "404":
+          description: invoice not found
+        
+    put:
+      tags:
+      - warehouse-controller
+      operationId: updateWarehouse
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WarehouseRequest'
+        required: true
+      responses:
+        "200":
+          description: successful update
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/WarehouseDto'
+        "400":
+          description: request parameters are invalid
+        "404":
+          description: warehouse not found
+    delete:
+      tags:
+      - warehouse-controller
+      operationId: deleteWarehouse
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: successful deletion
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/WarehouseDto'
+        "400":
+          description: invoice is used
+    patch:
+      tags:
+      - warehouse-controller
+      operationId: patchWarehouse
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WarehouseRequest'
+        required: true
+      responses:
+        "200":
+          description: successful partial update
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/WarehouseDto'
+        "400":
+          description: request parameters are invalid
+        "404":
+          description: warehouse not found
+  /warehouse-item-details/{id}:
+    get:
+      tags:
+      - warehouse-item-detail-controller
+      operationId: getWarehouseItemDetail
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: successful
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/WarehouseItemDetailDto'
+        "404":
+          description: invoice item detail not found
+    put:
+      tags:
+      - warehouse-item-detail-controller
+      operationId: updateWarehouseItemDetail
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WarehouseItemDetailRequest'
+        required: true
+      responses:
+        "200":
+          description: successful update
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/WarehouseItemDetailDto'
+        "400":
+          description: request parameters are invalid
+        "404":
+          description: invoice item detail not found
+    delete:
+      tags:
+      - warehouse-item-detail-controller
+      operationId: deleteWarehouseItemDetail
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: successful deletion
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/WarehouseItemDetailDto'
+        "400":
+          description: invoice item detail is used
+        "404":
+          description: invoice item detail not found
+    patch:
+      tags:
+      - warehouse-item-detail-controller
+      operationId: patchWarehouseItemDetail
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WarehouseItemDetailRequest'
+        required: true
+      responses:
+        "200":
+          description: successful partial update
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/WarehouseItemDetailDto'
+        "400":
+          description: request parameters are invalid
+        "404":
+          description: invoice item detail not found
+  /units/{id}:
+    get:
+      tags:
+      - unit-controller
+      operationId: getUnit
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: successful
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/UnitDto'
+        "404":
+          description: unit not found
+    put:
+      tags:
+      - unit-controller
+      operationId: updateUnit
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UnitRequest'
+        required: true
+      responses:
+        "200":
+          description: successful
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/UnitDto'
+        "400":
+          description: request parameters are invalid
+        "404":
+          description: belongsToId unit not found
+    delete:
+      tags:
+      - unit-controller
+      operationId: deleteUnit
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: successful
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/UnitDto'
+        "400":
+          description: unit is used
+        "404":
+          description: unit not found
+    patch:
+      tags:
+      - unit-controller
+      operationId: patchUnit
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UnitRequest'
+        required: true
+      responses:
+        "200":
+          description: successful
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/UnitDto'
+        "400":
+          description: request parameters are invalid
+        "404":
+          description: belongsToId unit not found
+  /items/{id}:
+    get:
+      tags:
+      - item-controller
+      operationId: getItem
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: successful
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ItemDto'
+        "404":
+          description: item not found
+    put:
+      tags:
+      - item-controller
+      operationId: updateItem
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ItemRequest'
+        required: true
+      responses:
+        "200":
+          description: successful
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ItemDto'
+        "400":
+          description: request parameters are invalid
+        "404":
+          description: baseUnitId unit not found
+    delete:
+      tags:
+      - item-controller
+      operationId: deleteItem
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: successful
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ItemDto'
+        "400":
+          description: item is used
+        "404":
+          description: item not found
+    patch:
+      tags:
+      - item-controller
+      operationId: patchItem
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ItemRequest'
+        required: true
+      responses:
+        "200":
+          description: successful
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ItemDto'
+        "400":
+          description: request parameters are invalid
+        "404":
+          description: baseUnitId unit not found
+  /invoices/{id}:
+    get:
+      tags:
+      - invoice-controller
+      operationId: getInvoice
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: successful
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/InvoiceDto'
+        "404":
+          description: invoice not found
+    put:
+      tags:
+      - invoice-controller
+      operationId: updateInvoice
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InvoiceRequest'
+        required: true
+      responses:
+        "200":
+          description: successful update
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/InvoiceDto'
+        "400":
+          description: request parameters are invalid
+        "404":
+          description: warehouseId Warehouse not found
+    delete:
+      tags:
+      - invoice-controller
+      operationId: deleteInvoice
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: successful deletion
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/InvoiceDto'
+        "400":
+          description: invoice is used
+        "403":
+          description: invoice is not pending
+    patch:
+      tags:
+      - invoice-controller
+      operationId: patchInvoice
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InvoiceRequest'
+        required: true
+      responses:
+        "200":
+          description: successful partial update
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/InvoiceDto'
+        "400":
+          description: request parameters are invalid
+        "404":
+          description: warehouseId Warehouse not found
+  /invoices/{id}/post:
+    put:
+      tags:
+      - invoice-controller
+      operationId: postInvoice
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: succesful posting
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/InvoiceDto'
+        "403":
+          description: invoice is not pending
+  /invoices/{id}/cancel:
+    put:
+      tags:
+      - invoice-controller
+      operationId: cancelInvoice
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/InvoiceDto'
+  /invoice-item-details/{id}:
+    get:
+      tags:
+      - invoice-item-detail-controller
+      operationId: getInvoiceItemDetail
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: successful
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/InvoiceItemDetailDto'
+    put:
+      tags:
+      - invoice-item-detail-controller
+      operationId: updateInvoiceItemDetail
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InvoiceItemDetailRequest'
+        required: true
+      responses:
+        "200":
+          description: successful update
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/InvoiceItemDetailDto'
+        "400":
+          description: request parameters are invalid
+        "404":
+          description: invoiceItemDetail not found
+    delete:
+      tags:
+      - invoice-item-detail-controller
+      operationId: deleteInvoiceItemDetail
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: successful deletion
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/InvoiceItemDetailDto'
+        "400":
+          description: invoice item detail is used
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        "403":
+          description: invoice is posted
+        "404":
+          description: invoice item detail not found
+    patch:
+      tags:
+      - invoice-item-detail-controller
+      operationId: patchInvoiceItemDetail
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InvoiceItemDetailRequest'
+        required: true
+      responses:
+        "200":
+          description: successful update
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/InvoiceItemDetailDto'
+        "400":
+          description: request parameters are invalid
+        "404":
+          description: invoice item detail not found
+  /contacts/{id}:
+    get:
+      tags:
+      - contact-controller
+      operationId: getContact
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: successful
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ContactDto'
+        "404":
+          description: contact not found
+    put:
+      tags:
+      - contact-controller
+      operationId: updateContact
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactRequest'
+        required: true
+      responses:
+        "200":
+          description: successful
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ContactDto'
+        "400":
+          description: request parameters are invalid
+        "404":
+          description: contact not found
+    delete:
+      tags:
+      - contact-controller
+      operationId: deleteContact
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: successful
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ContactDto'
+        "400":
+          description: contact is used
+        "404":
+          description: contact not found
+    patch:
+      tags:
+      - contact-controller
+      operationId: patchContact
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactRequest'
+        required: true
+      responses:
+        "200":
+          description: successful
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ContactDto'
+        "400":
+          description: request parameters are invalid
+        "404":
+          description: contact not found
+  /warehouses:
+    get:
+      tags:
+      - warehouse-controller
+      operationId: getWarehouses
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 25
+      - name: query
+        in: query
+        required: false
+        schema:
+          type: string
+          default: ""
+      responses:
+        "200":
+          description: successful
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PageWarehouseDto'
+    post:
+      tags:
+      - warehouse-controller
+      operationId: createWarehouse
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WarehouseRequest'
+        required: true
+      responses:
+        "201":
+          description: successful creation
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/WarehouseDto'
+        "400":
+          description: request parameters are invalid
+  /warehouses/{id}/details:
+    get:
+      tags:
+      - warehouse-controller
+      operationId: getWarehouseDetails
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 25
+      - name: query
+        in: query
+        required: false
+        schema:
+          type: string
+          default: ""
+      responses:
+        "200":
+          description: successful
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PageWarehouseItemDetailDto'
+        "404":
+          description: warehouse not found
+    post:
+      tags:
+      - warehouse-controller
+      operationId: createWarehouseDetail
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WarehouseItemDetailRequest'
+        required: true
+      responses:
+        "201":
+          description: successful creation
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/WarehouseItemDetailDto'
+        "400":
+          description: request parameters are invalid
+        "404":
+          description: itemId Item not found
+  /units:
+    get:
+      tags:
+      - unit-controller
+      operationId: getUnits
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 25
+      - name: query
+        in: query
+        required: false
+        schema:
+          type: string
+          default: ""
+      responses:
+        "200":
+          description: successful
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PageUnitDto'
+    post:
+      tags:
+      - unit-controller
+      operationId: createUnit
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UnitRequest'
+        required: true
+      responses:
+        "201":
+          description: successful creation
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/UnitDto'
+        "400":
+          description: request parameters are invalid
+        "404":
+          description: belongsToId unit not found
+  /items:
+    get:
+      tags:
+      - item-controller
+      operationId: getItems
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 25
+      - name: query
+        in: query
+        required: false
+        schema:
+          type: string
+          default: ""
+      responses:
+        "200":
+          description: successful
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PageItemDto'
+    post:
+      tags:
+      - item-controller
+      operationId: createItem
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ItemRequest'
+        required: true
+      responses:
+        "201":
+          description: successful creation
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ItemDto'
+        "400":
+          description: request parameters are invalid
+        "404":
+          description: baseUnitId unit not found
+  /invoices:
+    get:
+      tags:
+      - invoice-controller
+      operationId: getInvoices
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 25
+      - name: query
+        in: query
+        required: false
+        schema:
+          type: string
+          default: ""
+      responses:
+        "200":
+          description: successful
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PageInvoiceDto'
+    post:
+      tags:
+      - invoice-controller
+      operationId: createInvoice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InvoiceRequest'
+        required: true
+      responses:
+        "201":
+          description: successful creation
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/InvoiceDto'
+        "400":
+          description: request parameters are invalid
+        "404":
+          description: warehouseId Warehouse not found
+  /invoices/{id}/details:
+    get:
+      tags:
+      - invoice-controller
+      operationId: getInvoiceDetails
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 25
+      - name: query
+        in: query
+        required: false
+        schema:
+          type: string
+          default: ""
+      responses:
+        "200":
+          description: successful
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PageInvoiceItemDetailDto'
+        "404":
+          description: invoice not found
+    post:
+      tags:
+      - invoice-controller
+      operationId: createInvoiceDetail
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InvoiceItemDetailRequest'
+        required: true
+      responses:
+        "201":
+          description: successful creation
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/InvoiceItemDetailDto'
+        "400":
+          description: request parameters are invalid
+        "404":
+          description: unitId Unit not found
+  /contacts:
+    get:
+      tags:
+      - contact-controller
+      operationId: getContacts
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 25
+      - name: query
+        in: query
+        required: false
+        schema:
+          type: string
+          default: ""
+      - name: group
+        in: query
+        required: false
+        schema:
+          type: string
+          default: all
+      responses:
+        "200":
+          description: successful
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PageContactDto'
+        "400":
+          description: group query parameter is invalid
+    post:
+      tags:
+      - contact-controller
+      operationId: createContact
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactRequest'
+        required: true
+      responses:
+        "201":
+          description: successful creation
+        "400":
+          description: request parameters are invalid
+components:
+  schemas:
+    WarehouseRequest:
+      required:
+      - allowNegativeStock
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+        allowNegativeStock:
+          type: boolean
+    WarehouseDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        createdOn:
+          type: string
+          format: date-time
+        updatedOn:
+          type: string
+          format: date-time
+        name:
+          type: string
+        allowNegativeStock:
+          type: boolean
+    ApiError:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        error:
+          type: string
+        message:
+          type: string
+        status:
+          type: integer
+          format: int32
+        isSevere:
+          type: boolean
+    WarehouseItemDetailRequest:
+      required:
+      - itemId
+      - quantity
+      type: object
+      properties:
+        itemId:
+          type: integer
+          format: int64
+        quantity:
+          type: number
+          format: double
+    ItemDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        createdOn:
+          type: string
+          format: date-time
+        updatedOn:
+          type: string
+          format: date-time
+        name:
+          type: string
+        basePrice:
+          type: number
+          format: double
+        baseUnit:
+          $ref: '#/components/schemas/UnitDto'
+    UnitDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        createdOn:
+          type: string
+          format: date-time
+        updatedOn:
+          type: string
+          format: date-time
+        name:
+          type: string
+        factor:
+          type: number
+          format: double
+        belongsToId:
+          type: integer
+          format: int64
+    WarehouseItemDetailDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        createdOn:
+          type: string
+          format: date-time
+        updatedOn:
+          type: string
+          format: date-time
+        item:
+          $ref: '#/components/schemas/ItemDto'
+        quantity:
+          type: number
+          format: double
+    UnitRequest:
+      required:
+      - factor
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+        factor:
+          type: number
+          format: double
+        belongsToId:
+          type: integer
+          format: int64
+    ItemRequest:
+      required:
+      - basePrice
+      - baseUnitId
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+        baseUnitId:
+          type: integer
+          format: int64
+        basePrice:
+          type: number
+          format: double
+    InvoiceRequest:
+      required:
+      - customerId
+      - salesmanId
+      - warehouseId
+      type: object
+      properties:
+        customerId:
+          type: integer
+          format: int64
+        salesmanId:
+          type: integer
+          format: int64
+        warehouseId:
+          type: integer
+          format: int64
+    ContactDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        createdOn:
+          type: string
+          format: date-time
+        updatedOn:
+          type: string
+          format: date-time
+        name:
+          type: string
+        type:
+          type: string
+          enum:
+          - EMPLOYEE
+          - CUSTOMER
+    InvoiceDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        createdOn:
+          type: string
+          format: date-time
+        updatedOn:
+          type: string
+          format: date-time
+        customer:
+          $ref: '#/components/schemas/ContactDto'
+        salesman:
+          $ref: '#/components/schemas/ContactDto'
+        warehouse:
+          $ref: '#/components/schemas/WarehouseDto'
+        status:
+          type: string
+          enum:
+          - PENDING
+          - POSTED
+          - CANCELED
+        total:
+          type: number
+          format: double
+    InvoiceItemDetailRequest:
+      required:
+      - itemId
+      - quantity
+      - unitId
+      type: object
+      properties:
+        itemId:
+          type: integer
+          format: int64
+        unitId:
+          type: integer
+          format: int64
+        quantity:
+          type: number
+          format: double
+        unitPrice:
+          type: number
+          format: double
+    InvoiceItemDetailDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        createdOn:
+          type: string
+          format: date-time
+        updatedOn:
+          type: string
+          format: date-time
+        item:
+          $ref: '#/components/schemas/ItemDto'
+        unit:
+          $ref: '#/components/schemas/UnitDto'
+        unitPrice:
+          type: number
+          format: double
+        quantity:
+          type: number
+          format: double
+        totalPrice:
+          type: number
+          format: double
+    ContactRequest:
+      required:
+      - name
+      - type
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+          enum:
+          - EMPLOYEE
+          - CUSTOMER
+    PageWarehouseDto:
+      type: object
+      properties:
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/WarehouseDto'
+        number:
+          type: integer
+          format: int32
+        sort:
+          type: array
+          items:
+            $ref: '#/components/schemas/SortObject'
+        pageable:
+          $ref: '#/components/schemas/PageableObject'
+        numberOfElements:
+          type: integer
+          format: int32
+        first:
+          type: boolean
+        last:
+          type: boolean
+        empty:
+          type: boolean
+    PageableObject:
+      type: object
+      properties:
+        offset:
+          type: integer
+          format: int64
+        sort:
+          type: array
+          items:
+            $ref: '#/components/schemas/SortObject'
+        pageSize:
+          type: integer
+          format: int32
+        pageNumber:
+          type: integer
+          format: int32
+        unpaged:
+          type: boolean
+        paged:
+          type: boolean
+    SortObject:
+      type: object
+      properties:
+        direction:
+          type: string
+        nullHandling:
+          type: string
+        ascending:
+          type: boolean
+        property:
+          type: string
+        ignoreCase:
+          type: boolean
+    PageWarehouseItemDetailDto:
+      type: object
+      properties:
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/WarehouseItemDetailDto'
+        number:
+          type: integer
+          format: int32
+        sort:
+          type: array
+          items:
+            $ref: '#/components/schemas/SortObject'
+        pageable:
+          $ref: '#/components/schemas/PageableObject'
+        numberOfElements:
+          type: integer
+          format: int32
+        first:
+          type: boolean
+        last:
+          type: boolean
+        empty:
+          type: boolean
+    PageUnitDto:
+      type: object
+      properties:
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/UnitDto'
+        number:
+          type: integer
+          format: int32
+        sort:
+          type: array
+          items:
+            $ref: '#/components/schemas/SortObject'
+        pageable:
+          $ref: '#/components/schemas/PageableObject'
+        numberOfElements:
+          type: integer
+          format: int32
+        first:
+          type: boolean
+        last:
+          type: boolean
+        empty:
+          type: boolean
+    PageItemDto:
+      type: object
+      properties:
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/ItemDto'
+        number:
+          type: integer
+          format: int32
+        sort:
+          type: array
+          items:
+            $ref: '#/components/schemas/SortObject'
+        pageable:
+          $ref: '#/components/schemas/PageableObject'
+        numberOfElements:
+          type: integer
+          format: int32
+        first:
+          type: boolean
+        last:
+          type: boolean
+        empty:
+          type: boolean
+    PageInvoiceDto:
+      type: object
+      properties:
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvoiceDto'
+        number:
+          type: integer
+          format: int32
+        sort:
+          type: array
+          items:
+            $ref: '#/components/schemas/SortObject'
+        pageable:
+          $ref: '#/components/schemas/PageableObject'
+        numberOfElements:
+          type: integer
+          format: int32
+        first:
+          type: boolean
+        last:
+          type: boolean
+        empty:
+          type: boolean
+    PageInvoiceItemDetailDto:
+      type: object
+      properties:
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvoiceItemDetailDto'
+        number:
+          type: integer
+          format: int32
+        sort:
+          type: array
+          items:
+            $ref: '#/components/schemas/SortObject'
+        pageable:
+          $ref: '#/components/schemas/PageableObject'
+        numberOfElements:
+          type: integer
+          format: int32
+        first:
+          type: boolean
+        last:
+          type: boolean
+        empty:
+          type: boolean
+    PageContactDto:
+      type: object
+      properties:
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactDto'
+        number:
+          type: integer
+          format: int32
+        sort:
+          type: array
+          items:
+            $ref: '#/components/schemas/SortObject'
+        pageable:
+          $ref: '#/components/schemas/PageableObject'
+        numberOfElements:
+          type: integer
+          format: int32
+        first:
+          type: boolean
+        last:
+          type: boolean
+        empty:
+          type: boolean
