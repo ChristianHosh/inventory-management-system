@@ -1,6 +1,6 @@
 openapi: 3.0.1
 info:
-  title: OpenAPI definition
+  title: Inventory Management System
   version: v0
 servers:
 - url: http://localhost:8080
@@ -9,8 +9,8 @@ paths:
   /warehouses/{id}:
     get:
       tags:
-      - warehouse-controller
-      operationId: getWarehouse
+      - Warehouse
+      operationId: get warehouse
       parameters:
       - name: id
         in: path
@@ -30,8 +30,8 @@ paths:
         
     put:
       tags:
-      - warehouse-controller
-      operationId: updateWarehouse
+      - Warehouse
+      operationId: update warehouse
       parameters:
       - name: id
         in: path
@@ -58,8 +58,8 @@ paths:
           description: warehouse not found
     delete:
       tags:
-      - warehouse-controller
-      operationId: deleteWarehouse
+      - Warehouse
+      operationId: delete warehouse
       parameters:
       - name: id
         in: path
@@ -78,8 +78,8 @@ paths:
           description: invoice is used
     patch:
       tags:
-      - warehouse-controller
-      operationId: patchWarehouse
+      - Warehouse
+      operationId: patch warehouse
       parameters:
       - name: id
         in: path
@@ -107,8 +107,8 @@ paths:
   /warehouse-item-details/{id}:
     get:
       tags:
-      - warehouse-item-detail-controller
-      operationId: getWarehouseItemDetail
+      - Warehouse Item Detail
+      operationId: get warehouse item detail
       parameters:
       - name: id
         in: path
@@ -127,8 +127,8 @@ paths:
           description: invoice item detail not found
     put:
       tags:
-      - warehouse-item-detail-controller
-      operationId: updateWarehouseItemDetail
+      - Warehouse Item Detail
+      operationId: update warehouse item detail
       parameters:
       - name: id
         in: path
@@ -155,8 +155,8 @@ paths:
           description: invoice item detail not found
     delete:
       tags:
-      - warehouse-item-detail-controller
-      operationId: deleteWarehouseItemDetail
+      - Warehouse Item Detail
+      operationId: delete warehouse item detail
       parameters:
       - name: id
         in: path
@@ -177,8 +177,8 @@ paths:
           description: invoice item detail not found
     patch:
       tags:
-      - warehouse-item-detail-controller
-      operationId: patchWarehouseItemDetail
+      - Warehouse Item Detail
+      operationId: patch warehouse item detail
       parameters:
       - name: id
         in: path
@@ -206,8 +206,8 @@ paths:
   /units/{id}:
     get:
       tags:
-      - unit-controller
-      operationId: getUnit
+      - Unit
+      operationId: get unit
       parameters:
       - name: id
         in: path
@@ -226,8 +226,8 @@ paths:
           description: unit not found
     put:
       tags:
-      - unit-controller
-      operationId: updateUnit
+      - Unit
+      operationId: update unit
       parameters:
       - name: id
         in: path
@@ -254,8 +254,8 @@ paths:
           description: belongsToId unit not found
     delete:
       tags:
-      - unit-controller
-      operationId: deleteUnit
+      - Unit
+      operationId: delete unit
       parameters:
       - name: id
         in: path
@@ -276,8 +276,8 @@ paths:
           description: unit not found
     patch:
       tags:
-      - unit-controller
-      operationId: patchUnit
+      - Unit
+      operationId: patch unit
       parameters:
       - name: id
         in: path
@@ -305,8 +305,8 @@ paths:
   /items/{id}:
     get:
       tags:
-      - item-controller
-      operationId: getItem
+      - Item
+      operationId: get item
       parameters:
       - name: id
         in: path
@@ -325,8 +325,8 @@ paths:
           description: item not found
     put:
       tags:
-      - item-controller
-      operationId: updateItem
+      - Item
+      operationId: update item
       parameters:
       - name: id
         in: path
@@ -353,8 +353,8 @@ paths:
           description: baseUnitId unit not found
     delete:
       tags:
-      - item-controller
-      operationId: deleteItem
+      - Item
+      operationId: delete item
       parameters:
       - name: id
         in: path
@@ -375,8 +375,8 @@ paths:
           description: item not found
     patch:
       tags:
-      - item-controller
-      operationId: patchItem
+      - Item
+      operationId: patch item
       parameters:
       - name: id
         in: path
@@ -404,8 +404,8 @@ paths:
   /invoices/{id}:
     get:
       tags:
-      - invoice-controller
-      operationId: getInvoice
+      - Invoice
+      operationId: get invoice
       parameters:
       - name: id
         in: path
@@ -424,8 +424,8 @@ paths:
           description: invoice not found
     put:
       tags:
-      - invoice-controller
-      operationId: updateInvoice
+      - Invoice
+      operationId: update invoice
       parameters:
       - name: id
         in: path
@@ -452,8 +452,8 @@ paths:
           description: warehouseId Warehouse not found
     delete:
       tags:
-      - invoice-controller
-      operationId: deleteInvoice
+      - Invoice
+      operationId: delete invoice
       parameters:
       - name: id
         in: path
@@ -474,8 +474,8 @@ paths:
           description: invoice is not pending
     patch:
       tags:
-      - invoice-controller
-      operationId: patchInvoice
+      - Invoice
+      operationId: patch invoice
       parameters:
       - name: id
         in: path
@@ -503,8 +503,8 @@ paths:
   /invoices/{id}/post:
     put:
       tags:
-      - invoice-controller
-      operationId: postInvoice
+      - Invoice
+      operationId: post invoice
       parameters:
       - name: id
         in: path
@@ -524,8 +524,8 @@ paths:
   /invoices/{id}/cancel:
     put:
       tags:
-      - invoice-controller
-      operationId: cancelInvoice
+      - Invoice
+      operationId: cancel invoice
       parameters:
       - name: id
         in: path
@@ -543,8 +543,8 @@ paths:
   /invoice-item-details/{id}:
     get:
       tags:
-      - invoice-item-detail-controller
-      operationId: getInvoiceItemDetail
+      - Invoice Item Detail
+      operationId: get invoice item detail
       parameters:
       - name: id
         in: path
@@ -561,8 +561,8 @@ paths:
                 $ref: '#/components/schemas/InvoiceItemDetailDto'
     put:
       tags:
-      - invoice-item-detail-controller
-      operationId: updateInvoiceItemDetail
+      - Invoice Item Detail
+      operationId: update invoice item detail
       parameters:
       - name: id
         in: path
@@ -589,8 +589,8 @@ paths:
           description: invoiceItemDetail not found
     delete:
       tags:
-      - invoice-item-detail-controller
-      operationId: deleteInvoiceItemDetail
+      - Invoice Item Detail
+      operationId: delete invoice item detail
       parameters:
       - name: id
         in: path
@@ -617,8 +617,8 @@ paths:
           description: invoice item detail not found
     patch:
       tags:
-      - invoice-item-detail-controller
-      operationId: patchInvoiceItemDetail
+      - Invoice Item Detail
+      operationId: patch invoice item detail
       parameters:
       - name: id
         in: path
@@ -646,8 +646,8 @@ paths:
   /contacts/{id}:
     get:
       tags:
-      - contact-controller
-      operationId: getContact
+      - Contact
+      operationId: get contact
       parameters:
       - name: id
         in: path
@@ -666,8 +666,8 @@ paths:
           description: contact not found
     put:
       tags:
-      - contact-controller
-      operationId: updateContact
+      - Contact
+      operationId: update contact
       parameters:
       - name: id
         in: path
@@ -694,8 +694,8 @@ paths:
           description: contact not found
     delete:
       tags:
-      - contact-controller
-      operationId: deleteContact
+      - Contact
+      operationId: delete contact
       parameters:
       - name: id
         in: path
@@ -716,8 +716,8 @@ paths:
           description: contact not found
     patch:
       tags:
-      - contact-controller
-      operationId: patchContact
+      - Contact
+      operationId: patch contact
       parameters:
       - name: id
         in: path
@@ -745,8 +745,8 @@ paths:
   /warehouses:
     get:
       tags:
-      - warehouse-controller
-      operationId: getWarehouses
+      - Warehouse
+      operationId: get warehouses
       parameters:
       - name: page
         in: query
@@ -777,8 +777,8 @@ paths:
                 $ref: '#/components/schemas/PageWarehouseDto'
     post:
       tags:
-      - warehouse-controller
-      operationId: createWarehouse
+      - Warehouse
+      operationId: create warehouse
       requestBody:
         content:
           application/json:
@@ -797,8 +797,8 @@ paths:
   /warehouses/{id}/details:
     get:
       tags:
-      - warehouse-controller
-      operationId: getWarehouseDetails
+      - Warehouse
+      operationId: get warehouse details
       parameters:
       - name: id
         in: path
@@ -837,8 +837,8 @@ paths:
           description: warehouse not found
     post:
       tags:
-      - warehouse-controller
-      operationId: createWarehouseDetail
+      - Warehouse
+      operationId: create warehouse detail
       parameters:
       - name: id
         in: path
@@ -866,8 +866,8 @@ paths:
   /units:
     get:
       tags:
-      - unit-controller
-      operationId: getUnits
+      - Unit
+      operationId: get units
       parameters:
       - name: page
         in: query
@@ -898,8 +898,8 @@ paths:
                 $ref: '#/components/schemas/PageUnitDto'
     post:
       tags:
-      - unit-controller
-      operationId: createUnit
+      - Unit
+      operationId: create unit
       requestBody:
         content:
           application/json:
@@ -920,8 +920,8 @@ paths:
   /items:
     get:
       tags:
-      - item-controller
-      operationId: getItems
+      - Item
+      operationId: get items
       parameters:
       - name: page
         in: query
@@ -952,8 +952,8 @@ paths:
                 $ref: '#/components/schemas/PageItemDto'
     post:
       tags:
-      - item-controller
-      operationId: createItem
+      - Item
+      operationId: create item
       requestBody:
         content:
           application/json:
@@ -974,8 +974,8 @@ paths:
   /invoices:
     get:
       tags:
-      - invoice-controller
-      operationId: getInvoices
+      - Invoice
+      operationId: get invoices
       parameters:
       - name: page
         in: query
@@ -1006,8 +1006,8 @@ paths:
                 $ref: '#/components/schemas/PageInvoiceDto'
     post:
       tags:
-      - invoice-controller
-      operationId: createInvoice
+      - Invoice
+      operationId: create invoice
       requestBody:
         content:
           application/json:
@@ -1028,8 +1028,8 @@ paths:
   /invoices/{id}/details:
     get:
       tags:
-      - invoice-controller
-      operationId: getInvoiceDetails
+      - Invoice
+      operationId: get invoice details
       parameters:
       - name: id
         in: path
@@ -1068,8 +1068,8 @@ paths:
           description: invoice not found
     post:
       tags:
-      - invoice-controller
-      operationId: createInvoiceDetail
+      - Invoice
+      operationId: create invoice detail
       parameters:
       - name: id
         in: path
@@ -1097,8 +1097,8 @@ paths:
   /contacts:
     get:
       tags:
-      - contact-controller
-      operationId: getContacts
+      - Contact
+      operationId: get contacts
       parameters:
       - name: page
         in: query
@@ -1137,8 +1137,8 @@ paths:
           description: group query parameter is invalid
     post:
       tags:
-      - contact-controller
-      operationId: createContact
+      - Contact
+      operationId: create contact
       requestBody:
         content:
           application/json:
