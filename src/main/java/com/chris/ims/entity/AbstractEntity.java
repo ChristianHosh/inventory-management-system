@@ -69,7 +69,7 @@ public abstract class AbstractEntity {
     for (Field field : currentClass.getDeclaredFields()) {
       field.setAccessible(true);
       if (field.isAnnotationPresent(Keyword.class)) {
-        if (field.getType().isAssignableFrom(SpecEntity.class)) {
+        if (SpecEntity.class.isAssignableFrom(field.getType())) {
           SpecEntity specKeyword = (SpecEntity) field.get(this);
           if (specKeyword != null)
             keywordJoiner.add(specKeyword.getName());
