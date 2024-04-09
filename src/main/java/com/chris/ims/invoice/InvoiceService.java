@@ -11,7 +11,6 @@ import com.chris.ims.unit.UnitFacade;
 import com.chris.ims.warehouse.WarehouseFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -44,9 +43,7 @@ class InvoiceService {
 
   public InvoiceDto updateInvoice(Long id, InvoiceRequest request) {
     Invoice invoice = invoiceFacade.findById(id);
-
-    if (!invoice.isPending())
-      throw BxException.hardcoded("Invoice cannot be updated after posting");
+    invoice.checkEditMode();
 
     invoice.setCustomer(contactFacade.findById(request.customerId()))
             .setSalesman(contactFacade.findById(request.salesmanId()))
@@ -57,9 +54,8 @@ class InvoiceService {
 
   public InvoiceDto patchInvoice(Long id, InvoiceRequest request) {
     Invoice invoice = invoiceFacade.findById(id);
+    invoice.checkEditMode();
 
-    if (!invoice.isPending())
-      throw BxException.hardcoded("Invoice cannot be updated after posting");
     if (request.customerId() != null)
       invoice.setCustomer(contactFacade.findById(request.customerId()));
     if (request.salesmanId() != null)
@@ -72,17 +68,14 @@ class InvoiceService {
 
   public InvoiceDto deleteInvoice(Long id) {
     Invoice invoice = invoiceFacade.findById(id);
-    if (!invoice.isPending())
-      throw BxException.hardcoded("Invoice cannot be deleted after posting", HttpStatus.FORBIDDEN);
+    invoice.checkEditMode();
 
     return invoiceFacade.delete(invoice).toDto();
   }
 
   public InvoiceItemDetailDto createInvoiceItemDetail(Long id, InvoiceItemDetailRequest request) {
     Invoice invoice = invoiceFacade.findById(id);
-
-    if (!invoice.isPending())
-      throw BxException.hardcoded("Invoice cannot be updated after posting");
+    invoice.checkEditMode();
 
     InvoiceItemDetail invoiceItemDetail = new InvoiceItemDetail()
             .setItem(itemFacade.findById(request.itemId()))
@@ -104,7 +97,7 @@ class InvoiceService {
     Invoice invoice = invoiceFacade.findById(id);
 
     if (!invoice.isPending())
-      throw BxException.hardcoded("Invoice must be pending to post", HttpStatus.FORBIDDEN);
+      throw BxException.badRequest(Invoice.class, "invoice must be pending to post");
 
     invoice.setStatus(InvoiceStatus.POSTED);
     return invoiceFacade.save(invoice).toDto();
@@ -114,7 +107,7 @@ class InvoiceService {
     Invoice invoice = invoiceFacade.findById(id);
 
     if (invoice.isPending())
-      throw BxException.hardcoded("Invoice must be posted to cancel", HttpStatus.FORBIDDEN);
+      throw BxException.badRequest(Invoice.class, "invoice must be posted to cancel");
 
     invoice.setStatus(InvoiceStatus.CANCELED);
     return invoiceFacade.save(invoice).toDto();

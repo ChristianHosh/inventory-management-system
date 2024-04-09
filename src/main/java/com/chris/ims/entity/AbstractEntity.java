@@ -172,4 +172,18 @@ public abstract class AbstractEntity {
       return null;
     }
   }
+
+  public boolean canModify() {
+    return true;
+  }
+
+  public void checkEditMode() {
+    if (!canModify()) {
+      throw BxException.badRequest(getClass(), canModifyMessage(), this);
+    }
+  }
+
+  protected String canModifyMessage() {
+    return "can't modify entity";
+  }
 }

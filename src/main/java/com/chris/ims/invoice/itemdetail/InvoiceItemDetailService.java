@@ -1,17 +1,13 @@
 package com.chris.ims.invoice.itemdetail;
 
-import com.chris.ims.entity.exception.BxException;
 import com.chris.ims.item.ItemFacade;
 import com.chris.ims.unit.UnitFacade;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class InvoiceItemDetailService {
-
-  private final static String X_INVOICE_CANT_BE_UPDATED = "Invoice cannot be updated after posting";
 
   private final InvoiceItemDetailFacade invoiceItemDetailFacade;
   private final ItemFacade itemFacade;
@@ -23,8 +19,7 @@ public class InvoiceItemDetailService {
 
   public InvoiceItemDetailDto updateInvoiceItemDetail(Long id, InvoiceItemDetailRequest request) {
     InvoiceItemDetail itemDetail = invoiceItemDetailFacade.findById(id);
-    if (!itemDetail.getInvoice().isPending())
-      throw BxException.hardcoded(X_INVOICE_CANT_BE_UPDATED, HttpStatus.FORBIDDEN);
+    itemDetail.getInvoice().checkEditMode();
 
     itemDetail = itemDetail.setItem(itemFacade.findById(request.itemId()))
             .setUnit(unitFacade.findById(request.unitId()))
@@ -38,8 +33,7 @@ public class InvoiceItemDetailService {
 
   public InvoiceItemDetailDto patchInvoiceItemDetail(Long id, InvoiceItemDetailRequest request) {
     InvoiceItemDetail itemDetail = invoiceItemDetailFacade.findById(id);
-    if (!itemDetail.getInvoice().isPending())
-      throw BxException.hardcoded(X_INVOICE_CANT_BE_UPDATED, HttpStatus.FORBIDDEN);
+    itemDetail.getInvoice().checkEditMode();
 
     if (request.itemId() != null)
       itemDetail.setItem(itemFacade.findById(request.itemId()));
@@ -53,9 +47,7 @@ public class InvoiceItemDetailService {
 
   public InvoiceItemDetailDto deleteInvoiceItemDetail(Long id) {
     InvoiceItemDetail itemDetail = invoiceItemDetailFacade.findById(id);
-
-    if (!itemDetail.getInvoice().isPending())
-      throw BxException.hardcoded(X_INVOICE_CANT_BE_UPDATED, HttpStatus.FORBIDDEN);
+    itemDetail.getInvoice().checkEditMode();
 
     return invoiceItemDetailFacade.delete(itemDetail).toDto();
   }

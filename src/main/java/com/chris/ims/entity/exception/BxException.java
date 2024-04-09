@@ -1,6 +1,5 @@
 package com.chris.ims.entity.exception;
 
-import com.chris.ims.entity.AbstractEntity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -45,15 +44,9 @@ public class BxException extends RuntimeException {
   }
 
 
-  private static String getBaseEntityValue(AbstractEntity value) {
-    return value.toString();
-  }
-
   @NotNull
   @Contract("_, _ -> new")
   public static BxException notFound(@NotNull Class<?> clazz, @NotNull Object value) {
-    if (value instanceof AbstractEntity entity)
-      value = getBaseEntityValue(entity);
     return new BxNotFoundException(clazz.getSimpleName() + ": not found for [" + value + "]");
   }
 
@@ -68,8 +61,6 @@ public class BxException extends RuntimeException {
   @NotNull
   @Contract("_, _, _ -> new")
   public static BxException conflict(@NotNull Class<?> clazz, @NotNull Object field, @NotNull Object value) {
-    if (value instanceof AbstractEntity e)
-      value = getBaseEntityValue(e);
     return new BxConflictException(clazz.getSimpleName() + ": " + field + " already exists for [" + value + "]");
   }
 
@@ -84,16 +75,12 @@ public class BxException extends RuntimeException {
   @NotNull
   @Contract("_, _, _ -> new")
   public static BxException badRequest(@NotNull Class<?> clazz, @NotNull Object field, @NotNull Object value) {
-    if (value instanceof AbstractEntity e)
-      value = getBaseEntityValue(e);
     return new BxBadRequestException(clazz.getSimpleName() + ": " + field + " [" + value + "]");
   }
 
   @NotNull
   @Contract("_, _ -> new")
   public static BxException badRequest(@NotNull Class<?> clazz, @NotNull Object value) {
-    if (value instanceof AbstractEntity e)
-      value = getBaseEntityValue(e);
     return new BxBadRequestException(clazz.getSimpleName() + ": [" + value + "]");
   }
 
@@ -131,8 +118,6 @@ public class BxException extends RuntimeException {
   @NotNull
   @Contract("_, _ -> new")
   public static BxException hardcoded(String message, Object value) {
-    if (value instanceof AbstractEntity e)
-      value = getBaseEntityValue(e);
     return new BxSevereException(message + ": [" + value + "]");
   }
 

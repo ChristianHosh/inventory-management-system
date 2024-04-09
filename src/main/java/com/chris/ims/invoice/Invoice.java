@@ -94,6 +94,16 @@ public class Invoice extends AbstractEntity {
     }
   }
 
+  @Override
+  public boolean canModify() {
+    return status == InvoiceStatus.PENDING;
+  }
+
+  @Override
+  protected String canModifyMessage() {
+    return "invoice can't be modified after posting";
+  }
+
   public Invoice setCustomer(Contact customer) {
     if (!Objects.equals(customer.getType(), ContactType.CUSTOMER))
       throw BxException.badRequest(getClass(), "type", "must be CUSTOMER");
