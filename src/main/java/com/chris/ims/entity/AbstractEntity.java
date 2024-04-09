@@ -46,6 +46,10 @@ public abstract class AbstractEntity {
   @PreUpdate
   @PrePersist
   protected void preSave() {
+    // validate entity
+    this.validate()
+
+    // generate keyword
     StringJoiner keywordJoiner = new StringJoiner("~");
     try {
       Class<?> currentClass = getClass();
@@ -63,13 +67,19 @@ public abstract class AbstractEntity {
   protected void postLoad() {
     log.debug("loaded: " + this);
   }
+  
+  protected void validate() {
+
+  }
 
 
   private <T> void generateKeywordsFromClass(@NotNull Class<T> currentClass, StringJoiner keywordJoiner) throws IllegalAccessException {
+    // loops over class fields using reflection
     for (Field field : currentClass.getDeclaredFields()) {
       field.setAccessible(true);
       if (field.isAnnotationPresent(Keyword.class)) {
         if (SpecEntity.class.isAssignableFrom(field.getType())) {
+          // if the field type extends SpecEntity then use the name of that spec in the keyword
           SpecEntity specKeyword = (SpecEntity) field.get(this);
           if (specKeyword != null)
             keywordJoiner.add(specKeyword.getName());
@@ -101,6 +111,6 @@ public abstract class AbstractEntity {
 
   @Override
   public String toString() {
-    return String.format("%s [%d]: %s ", getClass().getSimpleName(), getId(), getName());
+    return String.format("%s [%d]: %s ", getClass().getName(), getId(), getName());
   }
 }
