@@ -15,6 +15,7 @@ import org.hibernate.proxy.HibernateProxy;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.StringJoiner;
@@ -26,6 +27,10 @@ import java.util.StringJoiner;
 public abstract class AbstractEntity {
 
   public static final String GROUP_ALL = "all";
+
+  @Transient
+  @Getter(AccessLevel.NONE)
+  private AbstractEntity original;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,12 +52,15 @@ public abstract class AbstractEntity {
     return "";
   }
 
+  @SuppressWarnings("unchecked")
+  protected <T extends AbstractEntity> T loadOriginal() {
+    return (T) this.original;
+  }
+
   @PreUpdate
   @PrePersist
   protected void preSave() {
-    log.debug("saving: " + this);
-    // validate entity
-    this.validate();
+    log.info("saving: " + this);
 
     // generate keyword
     StringJoiner keywordJoiner = new StringJoiner("~");
@@ -66,41 +74,42 @@ public abstract class AbstractEntity {
 
   @PostLoad
   protected void postLoad() {
-    log.debug("loaded: " + this);
+    log.info("loaded: " + this);
+
+    this.original = this.copy();
   }
 
   protected void validate() {
-    log.debug("validating: " + this);
+    log.info("validating: " + this);
 
     validateSubEntity(getClass());
   }
 
   private <T> void validateSubEntity(Class<T> tClass) {
+    // loops over class fields using reflection
     for (Field field : ReflectionUtils.getDeclaredFields(tClass)) {
       field.setAccessible(true);
       try {
-        if (field.isAnnotationPresent(SubEntity.class)) {
-          if (Iterable.class.isAssignableFrom(field.getType())) {
+        if (field.isAnnotationPresent(SubEntity.class) && (Iterable.class.isAssignableFrom(field.getType()))) {
             Iterable<?> collection = (Iterable<?>) field.get(this);
             for (Object obj : collection) {
-              if (obj == null) continue;
-              if (AbstractEntity.class.isAssignableFrom(obj.getClass())) {
-                // can be validated
-                AbstractEntity entity = (AbstractEntity) obj;
-                entity.validate();
-              } else break;
+              if (obj != null) {
+                if (AbstractEntity.class.isAssignableFrom(obj.getClass())) {
+                  // can be validated
+                  AbstractEntity entity = (AbstractEntity) obj;
+                  entity.validate();
+                } else break;
+              }
             }
-          }
         }
       } catch (Exception e) {
         if (e instanceof BxException bxException)
           throw bxException;
-        
+
         log.error("exception while validating field on " + this + ": " + field.getName() + ": " + e.getMessage(), e);
       }
     }
   }
-
 
   private <T> void generateKeywordsFromClass(@NotNull Class<T> tClass, StringJoiner keywordJoiner) throws IllegalAccessException {
     // loops over class fields using reflection
@@ -140,6 +149,27 @@ public abstract class AbstractEntity {
 
   @Override
   public String toString() {
-    return String.format("%s [%d]: %s ", getClass().getName(), getId(), getName());
+    if (this instanceof SpecEntity)
+      return String.format("%s [%d]: %s ", getClass().getSimpleName(), getId(), getName());
+    return String.format("%s [%d]", getClass().getSimpleName(), getId());
+  }
+
+  @SuppressWarnings("unchecked")
+  public <T extends AbstractEntity> T copy() {
+    try {
+      Class<? extends AbstractEntity> tClass = getClass();
+      AbstractEntity clone = tClass.getConstructor().newInstance();
+      for (Field field : ReflectionUtils.getDeclaredFields(tClass)) {
+        field.setAccessible(true);
+        int fieldMod = field.getModifiers();
+        if (!Modifier.isFinal(fieldMod) && !Modifier.isStatic(fieldMod)) {
+          field.set(clone, field.get(this));
+        }
+      }
+      return (T) clone;
+    } catch (Exception e) {
+      log.error("exception while copying entity: " + this + ": " + e.getMessage(), e);
+      return null;
+    }
   }
 }

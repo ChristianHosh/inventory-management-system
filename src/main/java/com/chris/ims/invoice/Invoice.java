@@ -51,31 +51,38 @@ public class Invoice extends AbstractEntity {
   @Override
   protected void validate() {
     super.validate();
-    if (status == InvoiceStatus.POSTED && !warehouse.getAllowNegativeStock()) {
-      warehouse.getItemDetails().forEach(warehouseItemDetail -> itemDetails.forEach(invoiceItemDetail -> {
-        if (Objects.equals(warehouseItemDetail.getItem(), invoiceItemDetail.getItem())) {
-          Double invoiceUnitFactor = invoiceItemDetail.getUnit().getTotalFactor();
+    Invoice original = loadOriginal();
 
-          Double invoiceItemQuantity = invoiceUnitFactor * invoiceItemDetail.getQuantity();
+    if (status == InvoiceStatus.POSTED && original != null && original.status == InvoiceStatus.PENDING) {
+      if (Boolean.FALSE.equals(warehouse.getAllowNegativeStock())) {
+        warehouse.getItemDetails().forEach(warehouseItemDetail -> itemDetails.forEach(invoiceItemDetail -> {
+          if (Objects.equals(warehouseItemDetail.getItem(), invoiceItemDetail.getItem())) {
+            Double invoiceUnitFactor = invoiceItemDetail.getUnit().getTotalFactor();
 
-          if (warehouseItemDetail.getQuantity() < invoiceItemQuantity)
-            throw BxException.badRequest(getClass(),
-                "item quantity on detail [" + invoiceItemDetail.getId() + "]",
-                "must be less than or equal to stock");
-        }
-      }));
+            Double invoiceItemQuantity = invoiceUnitFactor * invoiceItemDetail.getQuantity();
+
+            if (warehouseItemDetail.getQuantity() < invoiceItemQuantity)
+              throw BxException.badRequest(getClass(),
+                      "item quantity on detail [" + invoiceItemDetail.getId() + "]",
+                      "must be less than or equal to stock");
+          }
+        }));
+      }
+
+      if (getTotal() <= 0) {
+        throw BxException.badRequest(getClass(), "total", "must be greater than 0");
+      }
     }
+
+
   }
 
   @Override
   protected void preSave() {
     super.preSave();
 
-    if (status == InvoiceStatus.POSTED) {
-      if (getTotal() <= 0) {
-        throw BxException.badRequest(getClass(), "total", "must be greater than 0");
-      }
-
+    Invoice original = loadOriginal();
+    if (status == InvoiceStatus.POSTED && original != null && original.status == InvoiceStatus.PENDING) {
       warehouse.getItemDetails().forEach(warehouseItemDetail -> itemDetails.forEach(invoiceItemDetail -> {
         if (Objects.equals(warehouseItemDetail.getItem(), invoiceItemDetail.getItem())) {
           Double invoiceUnitFactor = invoiceItemDetail.getUnit().getTotalFactor();

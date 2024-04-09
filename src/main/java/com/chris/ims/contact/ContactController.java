@@ -60,7 +60,7 @@ class ContactController {
           @ApiResponse(responseCode = "400", description = "request parameters are invalid"),
           @ApiResponse(responseCode = "404", description = "contact not found")
   })
-  public ContactDto updateContact(@PathVariable Long id, @RequestBody @Valid ContactRequest request) {
+  public ContactDto updateContact(@PathVariable Long id, @Valid @RequestBody ContactRequest request) {
     return service.updateContact(id, request);
   }
 
@@ -70,7 +70,7 @@ class ContactController {
           @ApiResponse(responseCode = "400", description = "request parameters are invalid"),
           @ApiResponse(responseCode = "404", description = "contact not found")
   })
-  public ContactDto patchContact(@PathVariable Long id, @RequestBody @Valid ContactRequest request) {
+  public ContactDto patchContact(@PathVariable Long id, @Valid @RequestBody ContactRequest request) {
     return service.patchContact(id, request);
   }
 

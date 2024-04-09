@@ -81,6 +81,9 @@ class InvoiceService {
   public InvoiceItemDetailDto createInvoiceItemDetail(Long id, InvoiceItemDetailRequest request) {
     Invoice invoice = invoiceFacade.findById(id);
 
+    if (!invoice.isPending())
+      throw BxException.hardcoded("Invoice cannot be updated after posting");
+
     InvoiceItemDetail invoiceItemDetail = new InvoiceItemDetail()
             .setItem(itemFacade.findById(request.itemId()))
             .setUnit(unitFacade.findById(request.unitId()))

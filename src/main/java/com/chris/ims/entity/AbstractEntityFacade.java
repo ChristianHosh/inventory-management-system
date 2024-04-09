@@ -13,6 +13,7 @@ public interface AbstractEntityFacade<T extends AbstractEntity> {
   }
 
   default <S extends T> T save(S entity) {
+    entity.validate();
     return getRepository().save(entity);
   }
 
