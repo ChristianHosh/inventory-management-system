@@ -55,7 +55,7 @@ public abstract class AbstractEntity {
       }
       this.keyword = keywordJoiner.toString();
     } catch (Exception e) {
-      log.error("exception while generating keywords: " + e.getMessage(), e);
+      log.error("exception while generating keywords" + this + ": " + e.getMessage(), e);
     }
   }
 
