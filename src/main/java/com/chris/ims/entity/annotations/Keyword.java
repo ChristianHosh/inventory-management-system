@@ -1,4 +1,4 @@
-package com.chris.ims.entity;
+package com.chris.ims.entity.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

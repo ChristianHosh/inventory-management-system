@@ -1,7 +1,7 @@
 package com.chris.ims.warehouse.itemdetail;
 
 import com.chris.ims.entity.AbstractEntity;
-import com.chris.ims.entity.Keyword;
+import com.chris.ims.entity.annotations.Keyword;
 import com.chris.ims.item.Item;
 import com.chris.ims.warehouse.Warehouse;
 import jakarta.persistence.*;

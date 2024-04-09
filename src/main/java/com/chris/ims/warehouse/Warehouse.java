@@ -1,6 +1,7 @@
 package com.chris.ims.warehouse;
 
 import com.chris.ims.entity.SpecEntity;
+import com.chris.ims.entity.annotations.SubEntity;
 import com.chris.ims.warehouse.itemdetail.WarehouseItemDetail;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -20,6 +21,7 @@ public class Warehouse extends SpecEntity {
   @Column(name = "allow_negative_stock")
   private Boolean allowNegativeStock;
 
+  @SubEntity
   @OneToMany(mappedBy = "warehouse", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<WarehouseItemDetail> itemDetails = new LinkedHashSet<>();
 

@@ -1,5 +1,6 @@
 package com.chris.ims.entity;
 
+import com.chris.ims.entity.annotations.Keyword;
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;

@@ -1,7 +1,8 @@
 package com.chris.ims.invoice.itemdetail;
 
 import com.chris.ims.entity.AbstractEntity;
-import com.chris.ims.entity.Keyword;
+import com.chris.ims.entity.annotations.Keyword;
+import com.chris.ims.entity.exception.BxException;
 import com.chris.ims.invoice.Invoice;
 import com.chris.ims.item.Item;
 import com.chris.ims.unit.Unit;
@@ -9,6 +10,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -36,6 +39,25 @@ public class InvoiceItemDetail extends AbstractEntity {
   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
   @JoinColumn(name = "invoice_id")
   private Invoice invoice;
+
+  @Override
+  protected void validate() {
+    super.validate();
+    
+    Unit baseUnit = item.getBaseUnit();
+    boolean isValidUnit = false;
+    Unit currentUnit = unit;
+    while (currentUnit != null) {
+      if (Objects.equals(currentUnit, baseUnit)) {
+        isValidUnit = true;
+        break;
+      }
+      currentUnit = currentUnit.getBelongsTo();
+    }
+    
+    if (!isValidUnit)
+      throw BxException.badRequest(getClass(), "unit", "unit is not valid");
+  }
 
   public InvoiceItemDetail setItem(Item item) {
     this.item = item;

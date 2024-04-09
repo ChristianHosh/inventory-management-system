@@ -1,5 +1,8 @@
 package com.chris.ims.entity;
 
+import com.chris.ims.entity.annotations.Keyword;
+import com.chris.ims.entity.annotations.SubEntity;
+import com.chris.ims.entity.exception.BxException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -46,8 +49,9 @@ public abstract class AbstractEntity {
   @PreUpdate
   @PrePersist
   protected void preSave() {
+    log.debug("saving: " + this);
     // validate entity
-    this.validate()
+    this.validate();
 
     // generate keyword
     StringJoiner keywordJoiner = new StringJoiner("~");
@@ -67,9 +71,41 @@ public abstract class AbstractEntity {
   protected void postLoad() {
     log.debug("loaded: " + this);
   }
-  
-  protected void validate() {
 
+  protected void validate() {
+    log.debug("validating: " + this);
+
+    Class<?> currentClass = getClass();
+    while (currentClass != null) {
+      validateSubEntity(currentClass);
+      currentClass = currentClass.getSuperclass();
+    }
+  }
+
+  private <T> void validateSubEntity(Class<T> currentClass) {
+    for (Field field : currentClass.getDeclaredFields()) {
+      field.setAccessible(true);
+      try {
+        if (field.isAnnotationPresent(SubEntity.class)) {
+          if (Iterable.class.isAssignableFrom(field.getType())) {
+            Iterable<?> collection = (Iterable<?>) field.get(this);
+            for (Object obj : collection) {
+              if (obj == null) continue;
+              if (AbstractEntity.class.isAssignableFrom(obj.getClass())) {
+                // can be validated
+                AbstractEntity entity = (AbstractEntity) obj;
+                entity.validate();
+              } else break;
+            }
+          }
+        }
+      } catch (Exception e) {
+        if (e instanceof BxException bxException)
+          throw bxException;
+        
+        log.error("exception while validating field on " + this + ": " + field.getName() + ": " + e.getMessage(), e);
+      }
+    }
   }
 
 

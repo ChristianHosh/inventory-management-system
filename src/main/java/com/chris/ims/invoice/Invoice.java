@@ -3,7 +3,8 @@ package com.chris.ims.invoice;
 import com.chris.ims.contact.Contact;
 import com.chris.ims.contact.ContactType;
 import com.chris.ims.entity.AbstractEntity;
-import com.chris.ims.entity.Keyword;
+import com.chris.ims.entity.annotations.Keyword;
+import com.chris.ims.entity.annotations.SubEntity;
 import com.chris.ims.entity.exception.BxException;
 import com.chris.ims.invoice.itemdetail.InvoiceItemDetail;
 import com.chris.ims.warehouse.Warehouse;
@@ -43,9 +44,48 @@ public class Invoice extends AbstractEntity {
   @Column(name = "status", nullable = false)
   private InvoiceStatus status = InvoiceStatus.PENDING;
 
+  @SubEntity
   @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<InvoiceItemDetail> itemDetails = new LinkedHashSet<>();
 
+  @Override
+  protected void validate() {
+    super.validate();
+    if (status == InvoiceStatus.POSTED && !warehouse.getAllowNegativeStock()) {
+      warehouse.getItemDetails().forEach(warehouseItemDetail -> itemDetails.forEach(invoiceItemDetail -> {
+        if (Objects.equals(warehouseItemDetail.getItem(), invoiceItemDetail.getItem())) {
+          Double invoiceUnitFactor = invoiceItemDetail.getUnit().getTotalFactor();
+
+          Double invoiceItemQuantity = invoiceUnitFactor * invoiceItemDetail.getQuantity();
+
+          if (warehouseItemDetail.getQuantity() < invoiceItemQuantity)
+            throw BxException.badRequest(getClass(),
+                "item quantity on detail [" + invoiceItemDetail.getId() + "]",
+                "must be less than or equal to stock");
+        }
+      }));
+    }
+  }
+
+  @Override
+  protected void preSave() {
+    super.preSave();
+
+    if (status == InvoiceStatus.POSTED) {
+      if (getTotal() <= 0) {
+        throw BxException.badRequest(getClass(), "total", "must be greater than 0");
+      }
+
+      warehouse.getItemDetails().forEach(warehouseItemDetail -> itemDetails.forEach(invoiceItemDetail -> {
+        if (Objects.equals(warehouseItemDetail.getItem(), invoiceItemDetail.getItem())) {
+          Double invoiceUnitFactor = invoiceItemDetail.getUnit().getTotalFactor();
+
+          Double newQuantity = warehouseItemDetail.getQuantity() - (invoiceUnitFactor * invoiceItemDetail.getQuantity());
+          warehouseItemDetail.setQuantity(newQuantity);
+        }
+      }));
+    }
+  }
 
   public Invoice setCustomer(Contact customer) {
     if (!Objects.equals(customer.getType(), ContactType.CUSTOMER))
@@ -71,9 +111,9 @@ public class Invoice extends AbstractEntity {
 
   public Double getTotal() {
     return itemDetails.stream()
-            .mapToDouble(InvoiceItemDetail::getTotalPrice)
-            .filter(Double::isFinite)
-            .sum();
+        .mapToDouble(InvoiceItemDetail::getTotalPrice)
+        .filter(Double::isFinite)
+        .sum();
   }
 
 }
