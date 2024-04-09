@@ -3,6 +3,7 @@ package com.chris.ims.entity;
 import com.chris.ims.entity.annotations.Keyword;
 import com.chris.ims.entity.annotations.SubEntity;
 import com.chris.ims.entity.exception.BxException;
+import io.swagger.v3.core.util.ReflectionUtils;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -56,11 +57,7 @@ public abstract class AbstractEntity {
     // generate keyword
     StringJoiner keywordJoiner = new StringJoiner("~");
     try {
-      Class<?> currentClass = getClass();
-      while (currentClass != null) {
-        generateKeywordsFromClass(currentClass, keywordJoiner);
-        currentClass = currentClass.getSuperclass();
-      }
+      generateKeywordsFromClass(getClass(), keywordJoiner);
       this.keyword = keywordJoiner.toString();
     } catch (Exception e) {
       log.error("exception while generating keywords" + this + ": " + e.getMessage(), e);
@@ -75,15 +72,11 @@ public abstract class AbstractEntity {
   protected void validate() {
     log.debug("validating: " + this);
 
-    Class<?> currentClass = getClass();
-    while (currentClass != null) {
-      validateSubEntity(currentClass);
-      currentClass = currentClass.getSuperclass();
-    }
+    validateSubEntity(getClass());
   }
 
-  private <T> void validateSubEntity(Class<T> currentClass) {
-    for (Field field : currentClass.getDeclaredFields()) {
+  private <T> void validateSubEntity(Class<T> tClass) {
+    for (Field field : ReflectionUtils.getDeclaredFields(tClass)) {
       field.setAccessible(true);
       try {
         if (field.isAnnotationPresent(SubEntity.class)) {
@@ -109,9 +102,9 @@ public abstract class AbstractEntity {
   }
 
 
-  private <T> void generateKeywordsFromClass(@NotNull Class<T> currentClass, StringJoiner keywordJoiner) throws IllegalAccessException {
+  private <T> void generateKeywordsFromClass(@NotNull Class<T> tClass, StringJoiner keywordJoiner) throws IllegalAccessException {
     // loops over class fields using reflection
-    for (Field field : currentClass.getDeclaredFields()) {
+    for (Field field : ReflectionUtils.getDeclaredFields(tClass)) {
       field.setAccessible(true);
       if (field.isAnnotationPresent(Keyword.class)) {
         if (SpecEntity.class.isAssignableFrom(field.getType())) {
