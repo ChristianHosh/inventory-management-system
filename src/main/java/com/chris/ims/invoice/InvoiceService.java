@@ -33,28 +33,26 @@ class InvoiceService {
   }
 
   public InvoiceDto createInvoice(InvoiceRequest request) {
-    Invoice invoice = new Invoice()
-            .setCustomer(contactFacade.findById(request.customerId()))
-            .setSalesman(contactFacade.findById(request.salesmanId()))
-            .setWarehouse(warehouseFacade.findById(request.warehouseId()));
+    Invoice invoice = invoiceFacade.newEntity();
+    invoice.setCustomer(contactFacade.findById(request.salesmanId()));
+    invoice.setSalesman(contactFacade.findById(request.salesmanId()));
+    invoice.setWarehouse(warehouseFacade.findById(request.warehouseId()));
 
     return invoiceFacade.save(invoice).toDto();
   }
 
   public InvoiceDto updateInvoice(Long id, InvoiceRequest request) {
-    Invoice invoice = invoiceFacade.findById(id);
-    invoice.checkEditMode();
+    Invoice invoice = invoiceFacade.findById(id).edit();
 
-    invoice.setCustomer(contactFacade.findById(request.customerId()))
-            .setSalesman(contactFacade.findById(request.salesmanId()))
-            .setWarehouse(warehouseFacade.findById(request.warehouseId()));
+    invoice.setCustomer(contactFacade.findById(request.salesmanId()));
+    invoice.setSalesman(contactFacade.findById(request.salesmanId()));
+    invoice.setWarehouse(warehouseFacade.findById(request.warehouseId()));
 
     return invoiceFacade.save(invoice).toDto();
   }
 
   public InvoiceDto patchInvoice(Long id, InvoiceRequest request) {
     Invoice invoice = invoiceFacade.findById(id);
-    invoice.checkEditMode();
 
     if (request.customerId() != null)
       invoice.setCustomer(contactFacade.findById(request.customerId()));
@@ -68,25 +66,23 @@ class InvoiceService {
 
   public InvoiceDto deleteInvoice(Long id) {
     Invoice invoice = invoiceFacade.findById(id);
-    invoice.checkEditMode();
 
     return invoiceFacade.delete(invoice).toDto();
   }
 
   public InvoiceItemDetailDto createInvoiceItemDetail(Long id, InvoiceItemDetailRequest request) {
     Invoice invoice = invoiceFacade.findById(id);
-    invoice.checkEditMode();
 
-    InvoiceItemDetail invoiceItemDetail = new InvoiceItemDetail()
-            .setItem(itemFacade.findById(request.itemId()))
-            .setUnit(unitFacade.findById(request.unitId()))
-            .setQuantity(request.quantity())
-            .setInvoice(invoice);
+    InvoiceItemDetail itemDetail = invoiceItemDetailFacade.newEntity();
+    itemDetail.setItem(itemFacade.findById(request.itemId()));
+    itemDetail.setUnit(unitFacade.findById(request.unitId()));
+    itemDetail.setQuantity(request.quantity());
+    itemDetail.setInvoice(invoice);
 
     if (request.unitPrice() != null)
-      invoiceItemDetail.setUnitPrice(request.unitPrice());
+      itemDetail.setUnitPrice(request.unitPrice());
 
-    return invoiceItemDetailFacade.save(invoiceItemDetail).toDto();
+    return invoiceItemDetailFacade.save(itemDetail).toDto();
   }
 
   public Page<InvoiceItemDetailDto> getInvoiceDetails(Long id, int page, int size, String query) {

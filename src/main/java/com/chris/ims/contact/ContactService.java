@@ -21,33 +21,32 @@ class ContactService {
 
   @Transactional
   public ContactDto createContact(ContactRequest request) {
-    Contact contact = new Contact()
-            .setType(request.type())
-            .setName(request.name());
+    Contact contact = contactFacade.newEntity(request);
+    contact.setType(request.getType());
 
     return contactFacade.save(contact).toDto();
   }
 
   @Transactional
   public ContactDto updateContact(Long id, ContactRequest request) {
-    Contact contact = contactFacade.findById(id)
-            .setType(request.type())
-            .setName(request.name());
+    Contact contact = contactFacade.findById(id).edit();
+
+    contact.setName(request.getName());
+    contact.setType(request.getType());
 
     return contactFacade.save(contact).toDto();
   }
 
   @Transactional
   public ContactDto patchContact(Long id, ContactRequest request) {
-    Contact contact = contactFacade.findById(id);
+    Contact contact = contactFacade.findById(id).edit();
 
-    if (request.name() != null)
-      contact.setName(request.name());
-    if (request.type() != null)
-      contact.setType(request.type());
+    if (request.getName() != null)
+      contact.setName(request.getName());
+    if (request.getType() != null)
+      contact.setType(request.getType());
 
     return contactFacade.save(contact).toDto();
-
   }
 
   public ContactDto deleteContact(Long id) {

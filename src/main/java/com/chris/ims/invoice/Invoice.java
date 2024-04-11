@@ -4,14 +4,13 @@ import com.chris.ims.contact.Contact;
 import com.chris.ims.contact.ContactType;
 import com.chris.ims.entity.AbstractEntity;
 import com.chris.ims.entity.annotations.Keyword;
-import com.chris.ims.entity.annotations.SubEntity;
+import com.chris.ims.entity.annotations.SubEntityList;
 import com.chris.ims.entity.exception.BxException;
 import com.chris.ims.invoice.itemdetail.InvoiceItemDetail;
 import com.chris.ims.warehouse.Warehouse;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.experimental.Accessors;
 
 import java.util.LinkedHashSet;
 import java.util.Objects;
@@ -20,7 +19,6 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@Accessors(chain = true)
 @Table(name = "t_invoice")
 public class Invoice extends AbstractEntity {
 
@@ -44,7 +42,7 @@ public class Invoice extends AbstractEntity {
   @Column(name = "status", nullable = false)
   private InvoiceStatus status = InvoiceStatus.PENDING;
 
-  @SubEntity
+  @SubEntityList
   @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<InvoiceItemDetail> itemDetails = new LinkedHashSet<>();
 
@@ -52,6 +50,12 @@ public class Invoice extends AbstractEntity {
   protected void validate() {
     super.validate();
     Invoice original = loadOriginal();
+
+    if (!customer.getType().equals(ContactType.CUSTOMER))
+      throw BxException.badRequest(getClass(), "customer", "type must be CUSTOMER");
+
+    if (!salesman.getType().equals(ContactType.EMPLOYEE))
+      throw BxException.badRequest(getClass(), "salesman", "type must be EMPLOYEE");
 
     if (status == InvoiceStatus.POSTED && original != null && original.status == InvoiceStatus.PENDING) {
       if (Boolean.FALSE.equals(warehouse.getAllowNegativeStock())) {
@@ -73,8 +77,6 @@ public class Invoice extends AbstractEntity {
         throw BxException.badRequest(getClass(), "total", "must be greater than 0");
       }
     }
-
-
   }
 
   @Override
@@ -95,27 +97,13 @@ public class Invoice extends AbstractEntity {
   }
 
   @Override
-  public boolean canModify() {
+  public boolean canEdit() {
     return status == InvoiceStatus.PENDING;
   }
 
   @Override
-  protected String canModifyMessage() {
+  protected String cantEditMessage() {
     return "invoice can't be modified after posting";
-  }
-
-  public Invoice setCustomer(Contact customer) {
-    if (!Objects.equals(customer.getType(), ContactType.CUSTOMER))
-      throw BxException.badRequest(getClass(), "type", "must be CUSTOMER");
-    this.customer = customer;
-    return this;
-  }
-
-  public Invoice setSalesman(Contact salesman) {
-    if (!Objects.equals(salesman.getType(), ContactType.EMPLOYEE))
-      throw BxException.badRequest(getClass(), "type", "must be EMPLOYEE");
-    this.salesman = salesman;
-    return this;
   }
 
   public InvoiceDto toDto() {

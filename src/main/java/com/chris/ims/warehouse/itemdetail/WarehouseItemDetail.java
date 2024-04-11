@@ -1,20 +1,19 @@
 package com.chris.ims.warehouse.itemdetail;
 
 import com.chris.ims.entity.AbstractEntity;
+import com.chris.ims.entity.SubEntity;
 import com.chris.ims.entity.annotations.Keyword;
 import com.chris.ims.item.Item;
 import com.chris.ims.warehouse.Warehouse;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.experimental.Accessors;
 
 @Getter
 @Setter
 @Entity
-@Accessors(chain = true)
 @Table(name = "t_warehouse_item_detail")
-public class WarehouseItemDetail extends AbstractEntity {
+public class WarehouseItemDetail extends SubEntity {
 
   @Keyword
   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
@@ -30,5 +29,10 @@ public class WarehouseItemDetail extends AbstractEntity {
 
   public WarehouseItemDetailDto toDto() {
     return new WarehouseItemDetailDto(this);
+  }
+
+  @Override
+  public AbstractEntity getParent() {
+    return warehouse;
   }
 }

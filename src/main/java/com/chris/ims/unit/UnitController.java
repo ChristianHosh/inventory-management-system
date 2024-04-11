@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @ResponseStatus(HttpStatus.OK)
-@RequestMapping("/units")
+@RequestMapping("/api/units")
 class UnitController {
 
   private final UnitService service;

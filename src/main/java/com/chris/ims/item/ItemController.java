@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @ResponseStatus(HttpStatus.OK)
-@RequestMapping("/items")
+@RequestMapping("/api/items")
 class ItemController {
 
   private final ItemService service;

@@ -16,14 +16,13 @@ class UnitService {
 
   public UnitDto createUnit(UnitRequest request) {
     Unit parentUnit = null;
-    if (request.belongsToId() != null) {
-      parentUnit = unitFacade.findById(request.belongsToId());
+    if (request.getBelongsToId() != null) {
+      parentUnit = unitFacade.findById(request.getBelongsToId());
     }
 
-    Unit unit = new Unit()
-            .setBelongsTo(parentUnit)
-            .setFactor(request.factor())
-            .setName(request.name());
+    Unit unit = unitFacade.newEntity(request);
+    unit.setBelongsTo(parentUnit);
+    unit.setFactor(request.getFactor());
 
     return unitFacade.save(unit).toDto();
   }
@@ -34,27 +33,27 @@ class UnitService {
 
   public UnitDto updateUnit(Long id, UnitRequest request) {
     Unit parentUnit = null;
-    if (request.belongsToId() != null) {
-      parentUnit = unitFacade.findById(request.belongsToId());
+    if (request.getBelongsToId() != null) {
+      parentUnit = unitFacade.findById(request.getBelongsToId());
     }
 
-    Unit unit = unitFacade.findById(id)
-            .setBelongsTo(parentUnit)
-            .setFactor(request.factor())
-            .setName(request.name());
+    Unit unit = unitFacade.findById(id).edit();
+    unit.setBelongsTo(parentUnit);
+    unit.setFactor(request.getFactor());
+    unit.setName(request.getName());
 
     return unitFacade.save(unit).toDto();
   }
 
   public UnitDto patchUnit(Long id, UnitRequest request) {
-    Unit unit = unitFacade.findById(id);
+    Unit unit = unitFacade.findById(id).edit();
 
-    if (request.name() != null)
-      unit.setName(request.name());
-    if (request.factor() != null)
-      unit.setFactor(request.factor());
-    if (request.belongsToId() != null)
-      unit.setBelongsTo(unitFacade.findById(request.belongsToId()));
+    if (request.getName() != null)
+      unit.setName(request.getName());
+    if (request.getFactor() != null)
+      unit.setFactor(request.getFactor());
+    if (request.getBelongsToId() != null)
+      unit.setBelongsTo(unitFacade.findById(request.getBelongsToId()));
 
     return unitFacade.save(unit).toDto();
   }

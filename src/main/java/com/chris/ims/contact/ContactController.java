@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @ResponseStatus(HttpStatus.OK)
-@RequestMapping("/contacts")
+@RequestMapping("/api/contacts")
 class ContactController {
 
   private final ContactService service;

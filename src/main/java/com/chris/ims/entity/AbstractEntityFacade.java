@@ -7,27 +7,51 @@ import org.springframework.data.domain.Pageable;
 
 public interface AbstractEntityFacade<T extends AbstractEntity> {
 
+  default T newEntity() {
+    try {
+      T entity = getEntityClass().getConstructor().newInstance();
+      entity.setMode(Mode.NEW);
+      return entity;
+    } catch (Exception e) {
+      return null;
+    }
+  }
+
+  default T newEntity(SpecRequest request) {
+    T entity = newEntity();
+    if (entity instanceof SpecEntity spec)
+      spec.setName(request.getName());
+    return entity;
+  }
+
   default T findById(Long id) {
     return getRepository().findById(id)
             .orElseThrow(BxException.xNotFound(getEntityClass(), id));
   }
 
   default <S extends T> T save(S entity) {
-    entity.validate();
-    return getRepository().save(entity);
-  }
+    if (entity instanceof SubEntity subEntity) {
+      subEntity.getParent().edit();
+    }
 
-  default <S extends T> S delete(S entity) {
-    getRepository().delete(entity);
+    if (!entity.isEditing()) {
+      throw new IllegalStateException("entity: " + entity + " is not in edit mode");
+    }
+
+    entity.validate();
+    entity = getRepository().save(entity);
+    entity.setMode(Mode.NORMAL);
     return entity;
   }
 
-  default Page<T> findPage(int page, int size) {
-    return findPage(PageRequest.of(page, size));
-  }
+  default <S extends T> T delete(S entity) {
+    if (entity instanceof SubEntity subEntity) {
+      subEntity.getParent().edit();
+    }
 
-  default Page<T> findPage(Pageable pageable) {
-    return getRepository().findAll(pageable);
+    getRepository().delete(entity);
+    entity.setMode(Mode.DELETED);
+    return entity;
   }
 
   default Page<T> searchQuery(String query, Pageable pageable) {
@@ -41,4 +65,5 @@ public interface AbstractEntityFacade<T extends AbstractEntity> {
   AbstractEntityRepository<T> getRepository();
 
   Class<T> getEntityClass();
+
 }

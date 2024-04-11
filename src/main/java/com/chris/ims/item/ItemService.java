@@ -15,10 +15,9 @@ class ItemService {
 
   @Transactional
   public ItemDto createItem(ItemRequest request) {
-    Item item = new Item()
-            .setBaseUnit(unitFacade.findById(request.baseUnitId()))
-            .setBasePrice(request.basePrice())
-            .setName(request.name());
+    Item item = itemFacade.newEntity(request);
+    item.setBaseUnit(unitFacade.findById(request.getBaseUnitId()));
+    item.setBasePrice(request.getBasePrice());
 
     return itemFacade.save(item).toDto();
   }
@@ -32,23 +31,23 @@ class ItemService {
   }
 
   public ItemDto updateItem(Long id, ItemRequest request) {
-    Item item = itemFacade.findById(id)
-            .setBaseUnit(unitFacade.findById(request.baseUnitId()))
-            .setBasePrice(request.basePrice())
-            .setName(request.name());
+    Item item = itemFacade.findById(id).edit();
+    item.setName(request.getName());
+    item.setBaseUnit(unitFacade.findById(request.getBaseUnitId()));
+    item.setBasePrice(request.getBasePrice());
 
     return itemFacade.save(item).toDto();
   }
 
   public ItemDto patchItem(Long id, ItemRequest request) {
-    Item item = itemFacade.findById(id);
+    Item item = itemFacade.findById(id).edit();
 
-    if (request.name() != null)
-      item.setName(request.name());
-    if (request.basePrice() != null)
-      item.setBasePrice(request.basePrice());
-    if (request.baseUnitId() != null)
-      item.setBaseUnit(unitFacade.findById(request.baseUnitId()));
+    if (request.getName() != null)
+      item.setName(request.getName());
+    if (request.getBasePrice() != null)
+      item.setBasePrice(request.getBasePrice());
+    if (request.getBaseUnitId() != null)
+      item.setBaseUnit(unitFacade.findById(request.getBaseUnitId()));
 
     return itemFacade.save(item).toDto();
   }

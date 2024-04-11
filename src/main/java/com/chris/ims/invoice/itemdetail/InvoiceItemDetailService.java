@@ -18,12 +18,11 @@ public class InvoiceItemDetailService {
   }
 
   public InvoiceItemDetailDto updateInvoiceItemDetail(Long id, InvoiceItemDetailRequest request) {
-    InvoiceItemDetail itemDetail = invoiceItemDetailFacade.findById(id);
-    itemDetail.getInvoice().checkEditMode();
+    InvoiceItemDetail itemDetail = invoiceItemDetailFacade.findById(id).edit();
 
-    itemDetail = itemDetail.setItem(itemFacade.findById(request.itemId()))
-            .setUnit(unitFacade.findById(request.unitId()))
-            .setQuantity(request.quantity());
+    itemDetail.setItem(itemFacade.findById(request.itemId()));
+    itemDetail.setUnit(unitFacade.findById(request.unitId()));
+    itemDetail.setQuantity(request.quantity());
 
     if (request.unitPrice() != null)
       itemDetail.setUnitPrice(request.unitPrice());
@@ -32,8 +31,7 @@ public class InvoiceItemDetailService {
   }
 
   public InvoiceItemDetailDto patchInvoiceItemDetail(Long id, InvoiceItemDetailRequest request) {
-    InvoiceItemDetail itemDetail = invoiceItemDetailFacade.findById(id);
-    itemDetail.getInvoice().checkEditMode();
+    InvoiceItemDetail itemDetail = invoiceItemDetailFacade.findById(id).edit();
 
     if (request.itemId() != null)
       itemDetail.setItem(itemFacade.findById(request.itemId()));
@@ -47,8 +45,6 @@ public class InvoiceItemDetailService {
 
   public InvoiceItemDetailDto deleteInvoiceItemDetail(Long id) {
     InvoiceItemDetail itemDetail = invoiceItemDetailFacade.findById(id);
-    itemDetail.getInvoice().checkEditMode();
-
     return invoiceItemDetailFacade.delete(itemDetail).toDto();
   }
 }

@@ -1,23 +1,20 @@
 package com.chris.ims.warehouse;
 
 import com.chris.ims.entity.RequireAll;
-import jakarta.validation.constraints.NotBlank;
+import com.chris.ims.entity.SpecRequest;
 import jakarta.validation.constraints.NotNull;
-
-import java.io.Serializable;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Request DTO for {@link Warehouse}
  */
-public record WarehouseRequest(
+@Getter
+@Setter(AccessLevel.NONE)
+public class WarehouseRequest extends SpecRequest {
 
-        @NotNull(groups = RequireAll.class, message = "name can't be null")
-        @NotBlank(groups = RequireAll.class, message = "name can't be blank'")
-        String name,
-
-        @NotNull(groups = RequireAll.class, message = "allowNegativeStock can't be null")
-        Boolean allowNegativeStock
-
-) implements Serializable {
+  @NotNull(groups = RequireAll.class, message = "allowNegativeStock can't be null")
+  private Boolean allowNegativeStock;
 
 }

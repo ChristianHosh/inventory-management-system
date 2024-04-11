@@ -16,15 +16,15 @@ public class WarehouseItemDetailService {
   }
 
   public WarehouseItemDetailDto updateWarehouseItemDetail(Long id, WarehouseItemDetailRequest request) {
-    WarehouseItemDetail itemDetail = warehouseItemDetailFacade.findById(id)
-            .setItem(itemFacade.findById(request.itemId()))
-            .setQuantity(request.quantity());
+    WarehouseItemDetail itemDetail = warehouseItemDetailFacade.findById(id).edit();
+    itemDetail.setItem(itemFacade.findById(request.itemId()));
+    itemDetail.setQuantity(request.quantity());
 
     return warehouseItemDetailFacade.save(itemDetail).toDto();
   }
 
   public WarehouseItemDetailDto patchWarehouseItemDetail(Long id, WarehouseItemDetailRequest request) {
-    WarehouseItemDetail itemDetail = warehouseItemDetailFacade.findById(id);
+    WarehouseItemDetail itemDetail = warehouseItemDetailFacade.findById(id).edit();
 
     if (request.itemId() != null)
       itemDetail.setItem(itemFacade.findById(request.itemId()));

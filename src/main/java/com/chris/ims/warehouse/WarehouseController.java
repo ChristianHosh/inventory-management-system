@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @ResponseStatus(HttpStatus.OK)
-@RequestMapping("/warehouses")
+@RequestMapping("/api/warehouses")
 class WarehouseController {
 
   private final WarehouseService service;

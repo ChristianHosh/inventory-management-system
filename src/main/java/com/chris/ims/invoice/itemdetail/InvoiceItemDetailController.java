@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @ResponseStatus(HttpStatus.OK)
-@RequestMapping("/invoice-item-details")
+@RequestMapping("/api/invoice-item-details")
 public class InvoiceItemDetailController {
 
   private final InvoiceItemDetailService service;

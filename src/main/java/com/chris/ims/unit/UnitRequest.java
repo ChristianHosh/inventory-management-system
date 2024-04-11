@@ -1,27 +1,24 @@
 package com.chris.ims.unit;
 
 import com.chris.ims.entity.RequireAll;
-import jakarta.validation.constraints.NotBlank;
+import com.chris.ims.entity.SpecRequest;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-
-import java.io.Serializable;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Request DTO for {@link Unit}
  */
-public record UnitRequest(
-
-        @NotNull(groups = RequireAll.class, message = "name can't be null")
-        @NotBlank(groups = RequireAll.class, message = "name can't be blank'")
-        String name,
+@Getter
+@Setter(AccessLevel.NONE)
+public class UnitRequest extends SpecRequest {
 
         @NotNull(groups = RequireAll.class, message = "factor can't be null")
         @Positive(groups = RequireAll.class, message = "factor can't be negative or zero")
-        Double factor,
+        private Double factor;
 
-        Long belongsToId
-
-) implements Serializable {
+        private Long belongsToId;
 
 }

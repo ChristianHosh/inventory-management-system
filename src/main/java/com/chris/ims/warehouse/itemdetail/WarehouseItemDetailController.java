@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @ResponseStatus(HttpStatus.OK)
-@RequestMapping("/warehouse-item-details")
+@RequestMapping("/api/warehouse-item-details")
 public class WarehouseItemDetailController {
 
   private final WarehouseItemDetailService service;

@@ -4,12 +4,10 @@ import com.chris.ims.entity.SpecEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.experimental.Accessors;
 
 @Getter
 @Setter
 @Entity
-@Accessors(chain = true)
 @Table(name = "t_unit")
 public class Unit extends SpecEntity {
 
@@ -19,6 +17,15 @@ public class Unit extends SpecEntity {
   @ManyToOne
   @JoinColumn(name = "belongs_to_id")
   private Unit belongsTo;
+
+  @Override
+  protected void preSave() {
+    super.preSave();
+
+    if (belongsTo == null) {
+      factor = 1.0;
+    }
+  }
 
   public UnitDto toDto() {
     return new UnitDto(this);
