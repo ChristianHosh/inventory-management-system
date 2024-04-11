@@ -17,7 +17,9 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.time.LocalDateTime;
+import java.util.LinkedHashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.StringJoiner;
 
 @Slf4j
@@ -47,6 +49,14 @@ public abstract class AbstractEntity {
 
   @Column(name = "keyword", nullable = false, length = 555)
   private String keyword;
+
+  @Column(name = "deleted", nullable = false)
+  private Boolean deleted = false;
+
+  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+  @JoinColumn(name = "abstract_entity_id")
+  private Set<Audit> auditData = new LinkedHashSet<>();
+
 
   public String getName() {
     return "";
