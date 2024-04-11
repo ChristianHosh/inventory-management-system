@@ -1,11 +1,15 @@
 package com.chris.ims.entity;
 
 import com.chris.ims.entity.exception.BxException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 public interface AbstractEntityFacade<T extends AbstractEntity> {
+
+  Logger log = LoggerFactory.getLogger(AbstractEntityFacade.class);
 
   default T newEntity() {
     try {
@@ -13,7 +17,8 @@ public interface AbstractEntityFacade<T extends AbstractEntity> {
       entity.setMode(Mode.NEW);
       return entity;
     } catch (Exception e) {
-      return null;
+      log.error("could not instantiate entity of " + getEntityClass().getSimpleName() + ": " + e.getMessage(), e);
+      throw BxException.unexpected(e);
     }
   }
 
