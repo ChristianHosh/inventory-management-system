@@ -60,6 +60,7 @@ public interface AbstractEntityFacade<T extends AbstractEntity> {
   }
 
   default Page<T> searchQuery(String query, Pageable pageable) {
+    if (query == null) query = "";
     return getRepository().searchQuery(query, pageable);
   }
 
