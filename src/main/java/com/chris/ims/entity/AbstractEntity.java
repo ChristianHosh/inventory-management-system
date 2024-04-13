@@ -164,8 +164,8 @@ public abstract class AbstractEntity {
   @Override
   public String toString() {
     if (this instanceof SpecEntity)
-      return String.format("%s [%d]: MODE %s | %s  ", getClass().getSimpleName(), getId(), getMode(), getName());
-    return String.format("%s [%d]: MODE %s", getClass().getSimpleName(), getId(), getMode());
+      return String.format("%s [%d]: MODE '%s' | %s  ", getClass().getSimpleName(), getId(), getMode(), getName());
+    return String.format("%s [%d]: MODE '%s'", getClass().getSimpleName(), getId(), getMode());
   }
 
   @SuppressWarnings("unchecked")
