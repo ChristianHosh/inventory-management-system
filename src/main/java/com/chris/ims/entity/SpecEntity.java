@@ -15,10 +15,4 @@ public abstract class SpecEntity extends AbstractEntity {
   @Column(name = "name")
   private String name;
 
-  @SuppressWarnings("unchecked")
-  public <T extends SpecEntity> T setName(String name) {
-    this.name = name;
-    return (T) this;
-  }
-
 }

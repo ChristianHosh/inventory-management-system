@@ -1,8 +1,8 @@
 package com.chris.ims.invoice.itemdetail;
 
-import com.chris.ims.entity.AbstractEntity;
 import com.chris.ims.entity.SubEntity;
 import com.chris.ims.entity.annotations.Keyword;
+import com.chris.ims.entity.annotations.Parent;
 import com.chris.ims.entity.exception.BxException;
 import com.chris.ims.invoice.Invoice;
 import com.chris.ims.item.Item;
@@ -35,6 +35,7 @@ public class InvoiceItemDetail extends SubEntity {
   @Column(name = "unit_price", nullable = false)
   private Double unitPrice;
 
+  @Parent
   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
   @JoinColumn(name = "invoice_id")
   private Invoice invoice;
@@ -81,8 +82,4 @@ public class InvoiceItemDetail extends SubEntity {
     return new InvoiceItemDetailDto(this);
   }
 
-  @Override
-  public AbstractEntity getParent() {
-    return invoice;
-  }
 }

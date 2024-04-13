@@ -1,8 +1,8 @@
 package com.chris.ims.warehouse.itemdetail;
 
-import com.chris.ims.entity.AbstractEntity;
 import com.chris.ims.entity.SubEntity;
 import com.chris.ims.entity.annotations.Keyword;
+import com.chris.ims.entity.annotations.Parent;
 import com.chris.ims.item.Item;
 import com.chris.ims.warehouse.Warehouse;
 import jakarta.persistence.*;
@@ -23,6 +23,7 @@ public class WarehouseItemDetail extends SubEntity {
   @Column(name = "quantity", nullable = false)
   private Double quantity;
 
+  @Parent
   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH}, optional = false)
   @JoinColumn(name = "warehouse_id", nullable = false)
   private Warehouse warehouse;
@@ -31,8 +32,4 @@ public class WarehouseItemDetail extends SubEntity {
     return new WarehouseItemDetailDto(this);
   }
 
-  @Override
-  public AbstractEntity getParent() {
-    return warehouse;
-  }
 }

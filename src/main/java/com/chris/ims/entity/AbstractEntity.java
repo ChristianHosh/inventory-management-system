@@ -52,6 +52,7 @@ public abstract class AbstractEntity {
   @Column(name = "updated_on", nullable = false)
   private LocalDateTime updatedOn;
 
+  @Getter(AccessLevel.PACKAGE)
   @Column(name = "keyword", nullable = false, length = 555)
   private String keyword;
 
