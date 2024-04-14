@@ -13,6 +13,6 @@ public class ContactDto extends SpecEntityDto {
 
   public ContactDto(Contact entity) {
     super(entity);
-    this.type = entity.getType();
+    this.type = entity.getField(Contact.F_TYPE);
   }
 }

@@ -32,7 +32,7 @@ public interface AbstractEntityFacade<T extends AbstractEntity> {
   default T newEntity(SpecRequest request) {
     T entity = newEntity();
     if (entity instanceof SpecEntity spec)
-      spec.setName(request.getName());
+      spec.setField(SpecEntity.F_NAME, request.getName());
     return entity;
   }
 
@@ -50,7 +50,7 @@ public interface AbstractEntityFacade<T extends AbstractEntity> {
       throw new IllegalStateException("entity: " + entity + " is not in edit mode");
     }
 
-    entity.validate();
+    entity.validateInternal();
     entity = getRepository().save(entity);
     entity.setMode(Mode.NORMAL);
     return entity;
@@ -65,35 +65,31 @@ public interface AbstractEntityFacade<T extends AbstractEntity> {
     entity.setMode(Mode.DELETED);
     return entity;
   }
-  
+
   default Page<T> findAll(Pageable pageable) {
     return getRepository().findAll(pageable);
   }
-  
+
   default Page<T> findAll(int page, int size) {
     return findAll(PageRequest.of(page, size));
   }
-  
+
   default boolean existsById(Long id) {
     return getRepository().existsById(id);
   }
 
-  default boolean existsById(Iterable<Long> ids) {
-    return getRepository().existsByIds(ids);
-  }
-  
   default long count() {
     return getRepository().count();
   }
-  
+
   default List<T> findAllById(Iterable<Long> ids) {
     return getRepository().findAllById(ids);
   }
-  
+
   default List<T> findAllById(Long... ids) {
     return findAllById(List.of(ids));
   }
-  
+
   default Page<T> searchQuery(String query, Pageable pageable) {
     if (query == null) query = "";
     return getRepository().searchQuery(query, pageable);

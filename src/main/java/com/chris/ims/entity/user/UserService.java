@@ -16,8 +16,8 @@ class UserService {
 
   public UserDto createUser(UserRequest request) {
     User user = userFacade.newEntity(request);
-    user.setUsername(request.getUsername());
-    user.setPassword(request.getPassword());
+    user.setField(User.F_USERNAME, request.getUsername());
+    user.setField(User.F_PASSWORD, request.getPassword());
 
     return userFacade.save(user).toDto();
   }
@@ -28,9 +28,9 @@ class UserService {
 
   public UserDto updateUser(Long id, UserRequest request) {
     User user = userFacade.findById(id).edit();
-    user.setName(request.getName());
-    user.setUsername(request.getUsername());
-    user.setPassword(request.getPassword());
+    user.setField(User.F_NAME, request.getName());
+    user.setField(User.F_USERNAME, request.getUsername());
+    user.setField(User.F_PASSWORD, request.getPassword());
 
     return userFacade.save(user).toDto();
   }
@@ -39,11 +39,11 @@ class UserService {
     User user = userFacade.findById(id).edit();
 
     if (request.getName() != null)
-      user.setName(request.getName());
+      user.setField(User.F_NAME, request.getName());
     if (request.getUsername() != null)
-      user.setUsername(request.getUsername());
+      user.setField(User.F_USERNAME, request.getUsername());
     if (request.getPassword() != null)
-      user.setPassword(request.getPassword());
+      user.setField(User.F_PASSWORD, request.getPassword());
 
     return userFacade.save(user).toDto();
   }

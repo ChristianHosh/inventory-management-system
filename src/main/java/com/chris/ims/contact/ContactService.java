@@ -22,7 +22,7 @@ class ContactService {
   @Transactional
   public ContactDto createContact(ContactRequest request) {
     Contact contact = contactFacade.newEntity(request);
-    contact.setType(request.getType());
+    contact.setField(Contact.F_TYPE, request.getType());
 
     return contactFacade.save(contact).toDto();
   }
@@ -31,8 +31,8 @@ class ContactService {
   public ContactDto updateContact(Long id, ContactRequest request) {
     Contact contact = contactFacade.findById(id).edit();
 
-    contact.setName(request.getName());
-    contact.setType(request.getType());
+    contact.setField(Contact.F_NAME, request.getName());
+    contact.setField(Contact.F_TYPE, request.getType());
 
     return contactFacade.save(contact).toDto();
   }
@@ -42,9 +42,9 @@ class ContactService {
     Contact contact = contactFacade.findById(id).edit();
 
     if (request.getName() != null)
-      contact.setName(request.getName());
+      contact.setField(Contact.F_NAME, request.getName());
     if (request.getType() != null)
-      contact.setType(request.getType());
+      contact.setField(Contact.F_TYPE, request.getType());
 
     return contactFacade.save(contact).toDto();
   }

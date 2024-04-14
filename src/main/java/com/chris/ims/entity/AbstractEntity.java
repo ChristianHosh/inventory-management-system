@@ -2,8 +2,8 @@ package com.chris.ims.entity;
 
 import com.chris.ims.entity.annotations.Keyword;
 import com.chris.ims.entity.annotations.Res;
-import com.chris.ims.entity.annotations.SubEntityList;
 import com.chris.ims.entity.exception.BxException;
+import com.chris.ims.entity.utils.Resource;
 import io.swagger.v3.core.util.ReflectionUtils;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -16,19 +16,29 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.StringJoiner;
 
 @Slf4j
-@Getter
+@Getter(AccessLevel.PRIVATE)
 @Setter(AccessLevel.PRIVATE)
 @SoftDelete(columnName = "deleted")
 @MappedSuperclass
 public abstract class AbstractEntity {
 
   public static final String GROUP_ALL = "all";
+  public static final int F_ID = Resource.F_ID;
+  public static final int F_CREATED_ON = Resource.F_CREATED_ON;
+  public static final int F_UPDATED_ON = Resource.F_UPDATED_ON;
+
+
+  protected AbstractEntity() {
+    table = DbTable.byCode(getClass());
+  }
+
+  @Transient
+  private final DbTable table;
 
   @Transient
   @Getter(AccessLevel.NONE)
@@ -43,14 +53,17 @@ public abstract class AbstractEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id", nullable = false)
+  @Res("id")
   private Long id;
 
   @CreationTimestamp
   @Column(name = "created_on", nullable = false, updatable = false)
+  @Res("createdOn")
   private LocalDateTime createdOn;
 
   @UpdateTimestamp
   @Column(name = "updated_on", nullable = false)
+  @Res("updatedOn")
   private LocalDateTime updatedOn;
 
   @Getter(AccessLevel.PACKAGE)
@@ -88,37 +101,62 @@ public abstract class AbstractEntity {
     log.info("loaded: " + this);
   }
 
-  protected void validate() {
+  void validateInternal() {
     log.info("validating: " + this);
-
-    validateSubEntity();
+    for (EntField field : getTable().getFields()) {
+      validateInternal(field);
+    }
+    validate();
   }
 
-  private void validateSubEntity() {
-    // loops over class fields using reflection
-    for (Field field : ReflectionUtils.getDeclaredFields(getClass())) {
-      field.setAccessible(true);
-      try {
-        if (field.isAnnotationPresent(SubEntityList.class) && (Iterable.class.isAssignableFrom(field.getType()))) {
-          Iterable<?> collection = (Iterable<?>) field.get(this);
-          validateCollection(field, collection);
-        }
-      } catch (Exception e) {
-        if (e instanceof BxException bxException)
-          throw bxException;
+  protected void validate() {
 
-        log.error("exception while validating field on " + this + ": " + field.getName() + ": " + e.getMessage(), e);
-      }
+  }
+
+  void validateInternal(EntField field) {
+    if (field.isSubEntity()) {
+      Iterable<?> collection = getField(field);
+      validateCollection(field, collection);
+    }
+
+    if (AbstractEntity.class.isAssignableFrom(field.getType())) {
+      AbstractEntity entity = getEntity(field);
+      if (entity.isEditing())
+        entity.validateInternal();
+    }
+
+    if (field.isColumn()) {
+      Column column = field.getColumn();
+      if (!column.nullable() && isNull(field) && !field.isField(F_ID, F_CREATED_ON, F_UPDATED_ON))
+        throw BxException.missing(this, field);
+    }
+
+    if (field.isJoinColumn()) {
+      JoinColumn joinColumn = field.getJoinColumn();
+      if (!joinColumn.nullable() && isNull(field))
+        throw BxException.missing(this, field);
+    }
+
+    validate(field);
+  }
+
+  public void validate(EntField field) {
+
+  }
+
+  public void fieldChanged(EntField field, Object newValue, Object oldValue) {
+    if (field.isField(F_ID, F_CREATED_ON, F_UPDATED_ON)) {
+      throw BxException.disabled(this, field);
     }
   }
 
-  private static void validateCollection(Field field, Iterable<?> collection) {
+  private void validateCollection(EntField field, Iterable<?> collection) {
     for (Object obj : collection) {
       if (obj != null) {
         if (SubEntity.class.isAssignableFrom(obj.getClass())) {
           // can be validated
           SubEntity entity = (SubEntity) obj;
-          entity.validate();
+          entity.validateInternal();
         } else {
           throw new IllegalStateException(field + ": should be type of " + SubEntity.class.getSimpleName());
         }
@@ -129,7 +167,7 @@ public abstract class AbstractEntity {
   private void generateKeywordsFromClass(StringJoiner keywordJoiner) throws IllegalAccessException {
     // loops over class fields using reflection
     for (Field field : ReflectionUtils.getDeclaredFields(getClass())) {
-      field.setAccessible(true);
+      field.trySetAccessible();
       if (field.isAnnotationPresent(Keyword.class)) {
         if (SpecEntity.class.isAssignableFrom(field.getType())) {
           // if the field type extends SpecEntity then use the name of that spec in the keyword
@@ -191,12 +229,8 @@ public abstract class AbstractEntity {
     try {
       Class<? extends AbstractEntity> tClass = getClass();
       AbstractEntity clone = tClass.getConstructor().newInstance();
-      for (Field field : ReflectionUtils.getDeclaredFields(tClass)) {
-        field.setAccessible(true);
-        int fieldMod = field.getModifiers();
-        if (!Modifier.isFinal(fieldMod) && !Modifier.isStatic(fieldMod)) {
-          field.set(clone, field.get(this));
-        }
+      for (EntField field : getTable().getFields()) {
+        field.set(clone, field.get(this));
       }
       return (T) clone;
     } catch (Exception e) {
@@ -221,13 +255,67 @@ public abstract class AbstractEntity {
     return "can't modify entity";
   }
 
-  public Field field(String name) {
-    for (Field field : ReflectionUtils.getDeclaredFields(getClass())) {
-      Res res = field.getAnnotation(Res.class);
-      if (res != null && res.value().equals(name)) {
-        return field;
-      }
-    }
+  public EntField field(int id) {
+    return getTable().findField(id);
+  }
+
+  public final String getString(int id) {
+    return getString(field(id));
+  }
+
+  public final String getString(EntField field) {
+    Object value = getField(field);
+    if (value instanceof String string)
+      return string;
     return null;
+  }
+
+  public <T extends AbstractEntity> T getEntity(int id) {
+    return getEntity(field(id));
+  }
+
+  public <T extends AbstractEntity> T getEntity(EntField field) {
+    return getField(field);
+  }
+
+  public final  <T> T getField(int id) {
+    return getField(field(id));
+  }
+
+  @SuppressWarnings("unchecked")
+  public final <T> T getField(EntField field) {
+    return (T) field.get(this);
+  }
+
+  public final void setField(int id, Object value) {
+    setField(field(id), value);
+  }
+
+  public final void setField(EntField field, Object value) {
+    field.set(this, value);
+  }
+
+  public final boolean isNull(int id) {
+    return isNull(field(id));
+  }
+
+  public final boolean isNull(EntField field) {
+    return field.get(this) == null;
+  }
+
+  public String getLabel() {
+    return getTable().getLabel();
+  }
+
+  public Long getId() {
+    return getField(F_ID);
+  }
+
+  public LocalDateTime getCreatedOn() {
+    return getField(F_CREATED_ON);
+  }
+
+  public LocalDateTime getUpdatedOn() {
+    return getField(F_UPDATED_ON);
   }
 }

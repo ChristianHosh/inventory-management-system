@@ -4,8 +4,10 @@ import com.chris.ims.contact.Contact;
 import com.chris.ims.contact.ContactType;
 import com.chris.ims.entity.AbstractEntity;
 import com.chris.ims.entity.annotations.Keyword;
+import com.chris.ims.entity.annotations.Res;
 import com.chris.ims.entity.annotations.SubEntityList;
 import com.chris.ims.entity.exception.BxException;
+import com.chris.ims.entity.utils.CResources;
 import com.chris.ims.invoice.itemdetail.InvoiceItemDetail;
 import com.chris.ims.warehouse.Warehouse;
 import jakarta.persistence.*;
@@ -22,26 +24,37 @@ import java.util.Set;
 @Table(name = "t_invoice")
 public class Invoice extends AbstractEntity {
 
+  public static final int F_CUSTOMER = CResources.create("customer");
+  public static final int F_SALESMAN = CResources.create("salesman");
+  public static final int F_WAREHOUSE = CResources.create("warehouse");
+  public static final int F_STATUS = CResources.create("status");
+  public static final int F_ITEM_DETAILS = CResources.create(InvoiceItemDetail.class);
+
+  @Res("customer")
   @Keyword
   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
   @JoinColumn(name = "customer_id", nullable = false)
   private Contact customer;
 
+  @Res("salesman")
   @Keyword
   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
   @JoinColumn(name = "salesman_id", nullable = false)
   private Contact salesman;
 
+  @Res("warehouse")
   @Keyword
   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH}, optional = false)
   @JoinColumn(name = "warehouse_id", nullable = false)
   private Warehouse warehouse;
 
+  @Res("status")
   @Keyword
   @Enumerated
   @Column(name = "status", nullable = false)
   private InvoiceStatus status = InvoiceStatus.PENDING;
 
+  @Res("invoiceItemDetail")
   @SubEntityList
   @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<InvoiceItemDetail> itemDetails = new LinkedHashSet<>();
@@ -49,14 +62,18 @@ public class Invoice extends AbstractEntity {
   @Override
   protected void validate() {
     super.validate();
-    Invoice original = loadOriginal();
 
-    if (!customer.getType().equals(ContactType.CUSTOMER))
+    if (!customer.getField(Contact.F_TYPE).equals(ContactType.CUSTOMER))
       throw BxException.badRequest(getClass(), "customer", "type must be CUSTOMER");
 
-    if (!salesman.getType().equals(ContactType.EMPLOYEE))
+    if (!salesman.getField(Contact.F_TYPE).equals(ContactType.EMPLOYEE))
       throw BxException.badRequest(getClass(), "salesman", "type must be EMPLOYEE");
 
+    validateAfterPosting();
+  }
+
+  private void validateAfterPosting() {
+    Invoice original = loadOriginal();
     if (status == InvoiceStatus.POSTED && original != null && original.status == InvoiceStatus.PENDING) {
       if (Boolean.FALSE.equals(warehouse.getAllowNegativeStock())) {
         warehouse.getItemDetails().forEach(warehouseItemDetail -> itemDetails.forEach(invoiceItemDetail -> {

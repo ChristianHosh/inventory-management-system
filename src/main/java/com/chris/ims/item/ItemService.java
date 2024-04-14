@@ -32,7 +32,7 @@ class ItemService {
 
   public ItemDto updateItem(Long id, ItemRequest request) {
     Item item = itemFacade.findById(id).edit();
-    item.setName(request.getName());
+    item.setField(Item.F_NAME, request.getName());
     item.setBaseUnit(unitFacade.findById(request.getBaseUnitId()));
     item.setBasePrice(request.getBasePrice());
 

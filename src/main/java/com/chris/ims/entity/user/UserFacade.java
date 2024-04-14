@@ -9,12 +9,12 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class UserFacade implements AbstractEntityFacade<User> {
-  
+
   private final UserRepository repository;
 
   @Override
   public <S extends User> User delete(S entity) {
-    if (entity.getUsername().equalsIgnoreCase("ADMIN"))
+    if (entity.getString(User.F_USERNAME).equalsIgnoreCase("ADMIN"))
       throw BxException.badRequest(getEntityClass(), "can't delete admin user");
 
     return AbstractEntityFacade.super.delete(entity);

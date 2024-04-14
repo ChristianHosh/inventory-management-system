@@ -29,8 +29,8 @@ record UserDetailsImpl(
     return new UserDetailsImpl(
         user,
         user.getId(),
-        user.getUsername(),
-        user.getPassword(),
+        user.getField(User.F_USERNAME),
+        user.getField(User.F_PASSWORD),
         authorities
     );
   }
@@ -41,12 +41,12 @@ record UserDetailsImpl(
 
   @Override
   public String getUsername() {
-    return user.getUsername();
+    return user.getField(User.F_USERNAME);
   }
   
   @Override
   public String getPassword() {
-    return user.getPassword();
+    return user.getField(User.F_USERNAME);
   }
 
   @Override

@@ -20,13 +20,10 @@ class AfterApplicationStart {
     // if admin user does not exist then create it and set default password
     if (!userFacade.existsByUsername(ADMIN_STRING)) {
       User admin = userFacade.newEntity();
-      admin.setName(ADMIN_STRING);
-      admin.setUsername(ADMIN_STRING);
-      admin.setPassword("a12345");
+      admin.setField(User.F_NAME, ADMIN_STRING);
+      admin.setField(User.F_USERNAME, ADMIN_STRING);
+      admin.setField(User.F_PASSWORD,"a12345");
       userFacade.save(admin);
     }
-
-
-
   }
 }

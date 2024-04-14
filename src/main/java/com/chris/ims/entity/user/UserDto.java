@@ -13,6 +13,6 @@ public class UserDto extends SpecEntityDto {
 
   protected UserDto(User entity) {
     super(entity);
-    this.username = entity.getUsername();
+    this.username = entity.getString(User.F_USERNAME);
   }
 }

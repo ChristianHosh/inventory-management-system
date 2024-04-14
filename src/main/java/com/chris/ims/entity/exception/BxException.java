@@ -1,5 +1,8 @@
 package com.chris.ims.entity.exception;
 
+import com.chris.ims.entity.AbstractEntity;
+import com.chris.ims.entity.EntField;
+import com.chris.ims.entity.utils.CResources;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -7,6 +10,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 
+import java.lang.reflect.Field;
 import java.util.Objects;
 import java.util.function.Supplier;
 
@@ -44,6 +48,7 @@ public class BxException extends RuntimeException {
   public static BxException unauthorized(Object value) {
     return new BxUnauthorizedException("you are unauthorized to do this action: [" + value + "]");
   }
+
 
   public Exception getException() {
     return Objects.requireNonNullElse(exception, this);
@@ -139,6 +144,14 @@ public class BxException extends RuntimeException {
   @Contract("_ -> new")
   public static BxException unexpected(@NotNull Exception e) {
     return new BxSevereException(e.getMessage(), e);
+  }
+
+  public static BxException missing(AbstractEntity entity, EntField field) {
+    return new BxBadRequestException(String.format("(%s) missing value for [%s]", entity.getLabel(), field.getLabel()));
+  }
+
+  public static BxException disabled(AbstractEntity entity, EntField field) {
+    return new BxBadRequestException(String.format("(%s) [%s] cannot be updated", entity.getLabel(), field.getLabel()));
   }
 
   public HttpStatus getStatus() {
