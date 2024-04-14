@@ -19,6 +19,10 @@ public interface AbstractEntityFacade<T extends AbstractEntity> {
       T entity = getEntityClass().getConstructor().newInstance();
       entity.setMode(Mode.NEW);
       return entity;
+    } catch (NoSuchMethodException e) {
+      log.error("could not instantiate entity of " + getEntityClass().getSimpleName() + ": " + e.getMessage(), e);
+      log.error("entity " + getEntityClass().getSimpleName() + " must have a no-args constructor");
+      throw BxException.unexpected(e);
     } catch (Exception e) {
       log.error("could not instantiate entity of " + getEntityClass().getSimpleName() + ": " + e.getMessage(), e);
       throw BxException.unexpected(e);
