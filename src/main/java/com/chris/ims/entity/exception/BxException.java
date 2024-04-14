@@ -39,6 +39,12 @@ public class BxException extends RuntimeException {
       this.exception = null;
   }
 
+  @NotNull
+  @Contract("null -> new")
+  public static BxException unauthorized(Object value) {
+    return new BxUnauthorizedException("you are unauthorized to do this action: [" + value + "]");
+  }
+
   public Exception getException() {
     return Objects.requireNonNullElse(exception, this);
   }

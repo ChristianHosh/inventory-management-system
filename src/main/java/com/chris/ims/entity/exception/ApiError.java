@@ -6,11 +6,12 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Getter
-@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-public class ApiError {
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public class ApiError implements Serializable {
 
   private final LocalDateTime timestamp;
   private final String error;
@@ -18,8 +19,11 @@ public class ApiError {
   private final Integer status;
   private final Boolean isSevere;
 
-  ApiError(@NotNull HttpStatus status, String message, Boolean isSevere) {
+  public ApiError(@NotNull HttpStatus status, String message, Boolean isSevere) {
     this(LocalDateTime.now(), status.getReasonPhrase(), message, status.value(), isSevere);
   }
 
+  public ApiError(HttpStatus status, String message) {
+    this(status, message, false);
+  }
 }

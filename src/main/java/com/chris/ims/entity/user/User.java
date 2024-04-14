@@ -22,4 +22,8 @@ public class User extends SpecEntity {
   public UserDto toDto() {
     return new UserDto(this);
   }
+  
+  public boolean isAdmin() {
+    return "ADMIN".equalsIgnoreCase(this.username);
+  }
 }
