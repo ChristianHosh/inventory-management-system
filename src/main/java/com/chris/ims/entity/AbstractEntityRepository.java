@@ -15,4 +15,9 @@ public interface AbstractEntityRepository<T extends AbstractEntity> extends JpaR
           """)
   Page<T> searchQuery(String query, Pageable pageable);
 
+  @Query("""
+        select (count() > 0) from #{#entityName} e
+        where e.id in :ids
+        """)
+  boolean existsByIds(Iterable<Long> ids);
 }
