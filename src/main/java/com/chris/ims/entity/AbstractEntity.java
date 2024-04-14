@@ -1,6 +1,7 @@
 package com.chris.ims.entity;
 
 import com.chris.ims.entity.annotations.Keyword;
+import com.chris.ims.entity.annotations.Res;
 import com.chris.ims.entity.annotations.SubEntityList;
 import com.chris.ims.entity.exception.BxException;
 import io.swagger.v3.core.util.ReflectionUtils;
@@ -218,5 +219,15 @@ public abstract class AbstractEntity {
 
   protected String cantEditMessage() {
     return "can't modify entity";
+  }
+
+  public Field field(String name) {
+    for (Field field : ReflectionUtils.getDeclaredFields(getClass())) {
+      Res res = field.getAnnotation(Res.class);
+      if (res != null && res.value().equals(name)) {
+        return field;
+      }
+    }
+    return null;
   }
 }
