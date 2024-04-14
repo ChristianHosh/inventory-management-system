@@ -1,5 +1,6 @@
 package com.chris.ims.invoice;
 
+import com.chris.ims.Resource;
 import com.chris.ims.contact.Contact;
 import com.chris.ims.contact.ContactType;
 import com.chris.ims.entity.AbstractEntity;
@@ -21,6 +22,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
+@Res("invoice")
 @Table(name = "t_invoice")
 public class Invoice extends AbstractEntity {
 
@@ -28,7 +30,7 @@ public class Invoice extends AbstractEntity {
   public static final int F_SALESMAN = CResources.create("salesman");
   public static final int F_WAREHOUSE = CResources.create("warehouse");
   public static final int F_STATUS = CResources.create("status");
-  public static final int F_ITEM_DETAILS = CResources.create(InvoiceItemDetail.class);
+  public static final int F_ITEM_DETAILS = Resource.F_INVOICE_ITEM_DETAILS;
 
   @Res("customer")
   @Keyword

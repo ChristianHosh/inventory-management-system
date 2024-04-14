@@ -3,7 +3,6 @@ package com.chris.ims.entity.utils;
 import com.chris.ims.entity.annotations.Res;
 import lombok.extern.slf4j.Slf4j;
 
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -33,27 +32,31 @@ public class CResources {
     if (res == null)
       throw new IllegalStateException("class " + tClass.getSimpleName() + " must be annotated with @Res");
 
-    return create(tClass.getSimpleName());
+    return create(res.value());
   }
 
-  public static synchronized int create(String name) {
+  public static int create(String name) {
     if (RESOURCES_VALUES.containsValue(name)) {
       log.warn("duplicate calls for resource: " + name);
     }
 
     int id = getCurrentId();
     log.info("creating resource: " + name + " [" + id + "]");
-    RESOURCES_IDS.put(name, id);
-    RESOURCES_VALUES.put(id, name);
+    synchronized (RESOURCES_IDS) {
+      RESOURCES_IDS.put(name, id);
+      RESOURCES_VALUES.put(id, name);
+    }
     return id;
   }
 
-  public static synchronized int keyOf(String name) {
-    Integer id = RESOURCES_IDS.get(name);
-    if (id == null)
-      throw new IllegalStateException("resource '" + name + "' not found");
+  public static int keyOf(String name) {
+    synchronized (RESOURCES_IDS) {
+      Integer id = RESOURCES_IDS.get(name);
+      if (id == null)
+        throw new IllegalStateException("resource '" + name + "' not found");
 
-    return id;
+      return id;
+    }
   }
 
   public static synchronized String getValue(int id) {

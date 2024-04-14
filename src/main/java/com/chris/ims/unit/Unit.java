@@ -10,6 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
+@Res("unit")
 @Table(name = "t_unit")
 public class Unit extends SpecEntity {
 

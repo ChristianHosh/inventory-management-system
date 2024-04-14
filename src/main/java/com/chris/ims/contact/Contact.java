@@ -14,6 +14,7 @@ import lombok.Setter;
 @Getter(AccessLevel.NONE)
 @Setter(AccessLevel.NONE)
 @Entity
+@Res("contact")
 @Table(name = "t_contact")
 public class Contact extends SpecEntity {
 

@@ -1,6 +1,7 @@
 package com.chris.ims.warehouse;
 
 import com.chris.ims.entity.SpecEntity;
+import com.chris.ims.entity.annotations.Res;
 import com.chris.ims.entity.annotations.SubEntityList;
 import com.chris.ims.warehouse.itemdetail.WarehouseItemDetail;
 import jakarta.persistence.*;
@@ -13,6 +14,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
+@Res("warehouse")
 @Table(name = "t_warehouse")
 public class Warehouse extends SpecEntity {
 
