@@ -11,14 +11,26 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * REST controller for managing {@link Contact} entities.
+ */
 @RestController
 @RequiredArgsConstructor
 @ResponseStatus(HttpStatus.OK)
 @RequestMapping("/contacts")
-class ContactController {
+public class ContactController {
 
   private final ContactService service;
 
+  /**
+   * Returns a page of {@link ContactDto} entities that match the given query and group.
+   *
+   * @param page  the zero-based index of the first result to return
+   * @param size  the maximum number of results to return
+   * @param query the query string to search for
+   * @param group the group to filter by
+   * @return a page of {@link ContactDto} entities
+   */
   @GetMapping("")
   @Operation(responses = {
           @ApiResponse(responseCode = "200", description = "successful"),
@@ -33,6 +45,12 @@ class ContactController {
     return service.getContacts(page, size, query, group);
   }
 
+  /**
+   * Creates a new {@link Contact} entity based on the given request.
+   *
+   * @param request the request containing the contact information
+   * @return the created {@link ContactDto} entity
+   */
   @PostMapping("")
   @ResponseStatus(HttpStatus.CREATED)
   @Validated(RequireAll.class)
@@ -44,6 +62,12 @@ class ContactController {
     return service.createContact(request);
   }
 
+  /**
+   * Returns the {@link ContactDto} entity with the given ID.
+   *
+   * @param id the ID of the contact to retrieve
+   * @return the {@link ContactDto} entity
+   */
   @GetMapping("/{id}")
   @Operation(responses = {
           @ApiResponse(responseCode = "200", description = "successful"),
@@ -53,6 +77,13 @@ class ContactController {
     return service.getContact(id);
   }
 
+  /**
+   * Updates the {@link Contact} entity with the given ID based on the given request.
+   *
+   * @param id      the ID of the contact to update
+   * @param request the request containing the updated contact information
+   * @return the updated {@link ContactDto} entity
+   */
   @PutMapping("/{id}")
   @Validated(RequireAll.class)
   @Operation(responses = {
@@ -64,6 +95,13 @@ class ContactController {
     return service.updateContact(id, request);
   }
 
+  /**
+   * Partially updates the {@link Contact} entity with the given ID based on the given request.
+   *
+   * @param id      the ID of the contact to update
+   * @param request the request containing the updated contact information
+   * @return the updated {@link ContactDto} entity
+   */
   @PatchMapping("/{id}")
   @Operation(responses = {
           @ApiResponse(responseCode = "200", description = "successful"),
@@ -74,6 +112,12 @@ class ContactController {
     return service.patchContact(id, request);
   }
 
+  /**
+   * Deletes the {@link Contact} entity with the given ID.
+   *
+   * @param id the ID of the contact to delete
+   * @return the deleted {@link ContactDto} entity
+   */
   @DeleteMapping("/{id}")
   @Operation(responses = {
           @ApiResponse(responseCode = "200", description = "successful"),

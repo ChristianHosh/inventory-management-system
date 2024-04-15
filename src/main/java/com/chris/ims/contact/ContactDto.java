@@ -9,10 +9,15 @@ import lombok.Getter;
 @Getter
 public class ContactDto extends SpecEntityDto {
 
-  private final ContactType type;
+    private final ContactType type;
 
-  public ContactDto(Contact entity) {
-    super(entity);
-    this.type = entity.getType();
-  }
+    /**
+     * Constructs a new {@link ContactDto} instance.
+     *
+     * @param entity the {@link Contact} entity
+     */
+    public ContactDto(Contact entity) {
+        super(entity);
+        this.type = entity.getType();
+    }
 }

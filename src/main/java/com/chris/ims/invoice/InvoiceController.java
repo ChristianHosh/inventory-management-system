@@ -12,14 +12,24 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * REST controller for managing {@link Invoice}s.
+ */
 @RestController
 @RequiredArgsConstructor
-@ResponseStatus(HttpStatus.OK)
 @RequestMapping("/invoices")
 public class InvoiceController {
 
   private final InvoiceService service;
 
+  /**
+   * GET  /invoices : get all the invoices.
+   *
+   * @param page the page number to retrieve
+   * @param size the number of invoices per page
+   * @param query the query to search for
+   * @return the ResponseEntity with status 200 (OK) and the list of invoices in body
+   */
   @GetMapping("")
   @Operation(responses = {
           @ApiResponse(responseCode = "200", description = "successful")
@@ -27,11 +37,16 @@ public class InvoiceController {
   public Page<InvoiceDto> getInvoices(
           @RequestParam(value = "page", defaultValue = "0") int page,
           @RequestParam(value = "size", defaultValue = "25") int size,
-          @RequestParam(value = "query", defaultValue = "") String query
-  ) {
+          @RequestParam(value = "query", defaultValue = "") String query) {
     return service.getInvoices(page, size, query);
   }
 
+  /**
+   * POST  /invoices : create a new invoice.
+   *
+   * @param request the invoice to create
+   * @return the ResponseEntity with status 201 (Created) and with body the new invoice, or with status 400 (Bad Request) if the invoice has already an ID
+   */
   @PostMapping("")
   @ResponseStatus(HttpStatus.CREATED)
   @Validated(RequireAll.class)
@@ -46,6 +61,12 @@ public class InvoiceController {
     return service.createInvoice(request);
   }
 
+  /**
+   * GET  /invoices/{id} : get the "id" invoice.
+   *
+   * @param id the id of the invoice to retrieve
+   * @return the ResponseEntity with status 200 (OK) and with body the invoice, or with status 404 (Not Found)
+   */
   @GetMapping("/{id}")
   @Operation(responses = {
           @ApiResponse(responseCode = "200", description = "successful"),
@@ -55,6 +76,13 @@ public class InvoiceController {
     return service.getInvoice(id);
   }
 
+  /**
+   * PUT  /invoices/{id} : update the "id" invoice.
+   *
+   * @param id the id of the invoice to update
+   * @param request the invoice to update
+   * @return the ResponseEntity with status 200 (OK) and with body the updated invoice, or with status 400 (Bad Request) if the invoice is not valid, or with status 500 (Internal Server Error) if the invoice couldnt be updated
+   */
   @PutMapping("/{id}")
   @Validated(RequireAll.class)
   @Operation(responses = {
@@ -69,6 +97,13 @@ public class InvoiceController {
     return service.updateInvoice(id, request);
   }
 
+  /**
+   * PATCH  /invoices/{id} : partially update the "id" invoice.
+   *
+   * @param id the id of the invoice to update
+   * @param request the invoice to update
+   * @return the ResponseEntity with status 200 (OK) and with body the updated invoice, or with status 400 (Bad Request) if the invoice is not valid, or with status 500 (Internal Server Error) if the invoice couldnt be updated
+   */
   @PatchMapping("/{id}")
   @Operation(responses = {
           @ApiResponse(responseCode = "200", description = "successful partial update"),
@@ -82,6 +117,12 @@ public class InvoiceController {
     return service.patchInvoice(id, request);
   }
 
+  /**
+   * DELETE  /invoices/{id} : delete the "id" invoice.
+   *
+   * @param id the id of the invoice to delete
+   * @return the ResponseEntity with status 200 (OK)
+   */
   @DeleteMapping("/{id}")
   @Operation(responses = {
           @ApiResponse(responseCode = "200", description = "successful deletion"),
@@ -92,16 +133,37 @@ public class InvoiceController {
     return service.deleteInvoice(id);
   }
 
+  /**
+   * PUT  /invoices/{id}/post : post the "id" invoice.
+   *
+   * @param id the id of the invoice to post
+   * @return the ResponseEntity with status 200 (OK) and with body the updated invoice, or with status 400 (Bad Request) if the invoice is not valid, or with status 500 (Internal Server Error) if the invoice couldnt be updated
+   */
   @PutMapping("/{id}/post")
   public InvoiceDto postInvoice(@PathVariable Long id) {
     return service.postInvoice(id);
   }
 
+  /**
+   * PUT  /invoices/{id}/cancel : cancel the "id" invoice.
+   *
+   * @param id the id of the invoice to cancel
+   * @return the ResponseEntity with status 200 (OK) and with body the updated invoice, or with status 400 (Bad Request) if the invoice is not valid, or with status 500 (Internal Server Error) if the invoice couldnt be updated
+   */
   @PutMapping("/{id}/cancel")
   public InvoiceDto cancelInvoice(@PathVariable Long id) {
     return service.cancelInvoice(id);
   }
 
+  /**
+   * GET  /invoices/{id}/details : get the invoice details of the "id" invoice.
+   *
+   * @param id the id of the invoice to retrieve the details for
+   * @param page the page number to retrieve
+   * @param size the number of invoices per page
+   * @param query the query to search for
+   * @return the ResponseEntity with status 200 (OK) and the list of invoice details in body
+   */
   @GetMapping("/{id}/details")
   @Operation(responses = {
           @ApiResponse(responseCode = "200", description = "successful"),
@@ -111,12 +173,17 @@ public class InvoiceController {
           @PathVariable Long id,
           @RequestParam(value = "page", defaultValue = "0") int page,
           @RequestParam(value = "size", defaultValue = "25") int size,
-          @RequestParam(value = "query", defaultValue = "") String query
-  ) {
+          @RequestParam(value = "query", defaultValue = "") String query) {
     return service.getInvoiceDetails(id, page, size, query);
   }
 
-
+  /**
+   * POST  /invoices/{id}/details : create a new invoice detail for the "id" invoice.
+   *
+   * @param id the id of the invoice to create the detail for
+   * @param request the invoice detail to create
+   * @return the ResponseEntity with status 201 (Created) and with body the new invoice detail, or with status 400 (Bad Request) if the invoice detail is not valid, or with status 404 (Not Found) if the invoice or the item or the unit to create the detail for is not found
+   */
   @PostMapping("/{id}/details")
   @ResponseStatus(HttpStatus.CREATED)
   @Validated(RequireAll.class)

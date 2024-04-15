@@ -8,10 +8,15 @@ import lombok.Getter;
 @Getter
 public abstract class SpecEntityDto extends AbstractEntityDto {
 
-  private final String name;
+    private final String name;
 
-  protected SpecEntityDto(SpecEntity entity) {
-    super(entity);
-    this.name = entity.getName();
-  }
+    /**
+     * Constructs a new instance of {@link SpecEntityDto}
+     *
+     * @param entity the {@link SpecEntity} instance to convert to a DTO
+     */
+    protected SpecEntityDto(SpecEntity entity) {
+        super(entity);
+        this.name = entity.getName();
+    }
 }

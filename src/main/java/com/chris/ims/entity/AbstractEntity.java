@@ -20,6 +20,11 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.StringJoiner;
 
+/**
+ * base class for all entities in the system. It provided basic functionality such as
+ * auto generated ids, creation and update timestamps, keyword generation,
+ * and a mechanism for validating entities.
+ */
 @Slf4j
 @Getter
 @Setter(AccessLevel.PRIVATE)
@@ -28,35 +33,61 @@ public abstract class AbstractEntity {
 
   public static final String GROUP_ALL = "all";
 
+  /**
+   * the original instance of this entity. This is used to detect changes
+   */
   @Transient
   @Getter(AccessLevel.NONE)
   private AbstractEntity original;
 
+  /**
+   * the id of this entity
+   */
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id", nullable = false)
   private Long id;
 
+  /**
+   * the creation timestamp of this entity
+   */
   @CreationTimestamp
   @Column(name = "created_on", nullable = false, updatable = false)
   private LocalDateTime createdOn;
 
+  /**
+   * the update timestamp of this entity
+   */
   @UpdateTimestamp
   @Column(name = "updated_on", nullable = false)
   private LocalDateTime updatedOn;
 
+  /**
+   * the keyword of this entity used for searching
+   */
   @Column(name = "keyword", nullable = false, length = 555)
   private String keyword;
 
+  /**
+   * Returns the name of this entity.
+   * @return the name of this entity
+   */
   public String getName() {
     return "";
   }
 
+  /**
+   * loads the original entity
+   * @return the original entity before being changed
+   */
   @SuppressWarnings("unchecked")
   protected <T extends AbstractEntity> T loadOriginal() {
     return (T) this.original;
   }
 
+  /**
+   * called before saving entity
+   */
   @PreUpdate
   @PrePersist
   protected void preSave() {
@@ -72,6 +103,9 @@ public abstract class AbstractEntity {
     }
   }
 
+  /**
+   * called after loading entity
+   */
   @PostLoad
   protected void postLoad() {
     log.info("loaded: " + this);
@@ -79,12 +113,20 @@ public abstract class AbstractEntity {
     this.original = this.copy();
   }
 
+  /**
+   * validates this entity, this method is called before saving in the {@link AbstractEntityFacade}
+   */
   protected void validate() {
     log.info("validating: " + this);
 
     validateSubEntity(getClass());
   }
 
+  /**
+   * validates sub entities in collections
+   *
+   * @param tClass the current class to validate sub entities in
+   */
   private <T> void validateSubEntity(Class<T> tClass) {
     // loops over class fields using reflection
     for (Field field : ReflectionUtils.getDeclaredFields(tClass)) {
@@ -111,6 +153,13 @@ public abstract class AbstractEntity {
     }
   }
 
+  /**
+   * auto generates keywords for this entity
+   *
+   * @param tClass the current entity class to generate keywords from
+   * @param keywordJoiner the joiner for keywords
+   * @throws IllegalAccessException if an exception occurs while accessing the fields
+   */
   private <T> void generateKeywordsFromClass(@NotNull Class<T> tClass, StringJoiner keywordJoiner) throws IllegalAccessException {
     // loops over class fields using reflection
     for (Field field : ReflectionUtils.getDeclaredFields(tClass)) {
@@ -129,6 +178,7 @@ public abstract class AbstractEntity {
       }
     }
   }
+
 
   @Override
   public final boolean equals(Object object) {
