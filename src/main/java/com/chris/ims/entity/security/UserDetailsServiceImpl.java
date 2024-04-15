@@ -1,6 +1,6 @@
 package com.chris.ims.entity.security;
 
-import com.chris.ims.entity.exception.BxException;
+import com.chris.ims.entity.exception.CxException;
 import com.chris.ims.entity.user.User;
 import com.chris.ims.entity.user.UserFacade;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,7 @@ class UserDetailsServiceImpl implements UserDetailsService {
         authorities.add(new SimpleGrantedAuthority("USER"));
       }
       return UserDetailsImpl.from(user, authorities);
-    } catch (BxException e) {
+    } catch (CxException e) {
       throw new UsernameNotFoundException(e.getMessage(), e);
     }
   }

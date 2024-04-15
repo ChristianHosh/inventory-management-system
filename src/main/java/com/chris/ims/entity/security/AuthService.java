@@ -1,6 +1,6 @@
 package com.chris.ims.entity.security;
 
-import com.chris.ims.entity.exception.BxException;
+import com.chris.ims.entity.exception.CxException;
 import com.chris.ims.entity.user.UserFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,7 +25,7 @@ public class AuthService {
 
       return new JwtDto(jwtUtils.generateJwtToken(authentication));
     } else {
-      throw BxException.unauthorized("bad credentials");
+      throw CxException.unauthorized("bad credentials");
     }
   }
 }

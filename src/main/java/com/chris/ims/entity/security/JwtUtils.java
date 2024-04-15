@@ -1,7 +1,7 @@
 package com.chris.ims.entity.security;
 
-import com.chris.ims.entity.exception.BxException;
-import com.chris.ims.entity.utils.BDate;
+import com.chris.ims.entity.exception.CxException;
+import com.chris.ims.entity.utils.CDate;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -30,8 +30,8 @@ public final class JwtUtils {
     return Jwts.builder()
         .id(UUID.randomUUID().toString())
         .subject(userPrincipal.getUsername())
-        .issuedAt(BDate.currentDate().toDate())
-        .expiration(BDate.currentDate().addDay(jwtExpirationDays).toDate())
+        .issuedAt(CDate.currentDate().toDate())
+        .expiration(CDate.currentDate().addDay(jwtExpirationDays).toDate())
         .signWith(key())
         .compact();
   }
@@ -48,16 +48,16 @@ public final class JwtUtils {
       return true;
     } catch (MalformedJwtException e) {
       log.error("Invalid JWT token: {}", e.getMessage());
-      throw BxException.unauthorized("Invalid JWT token");
+      throw CxException.unauthorized("Invalid JWT token");
     } catch (ExpiredJwtException e) {
       log.error("JWT token is expired: {}", e.getMessage());
-      throw BxException.unauthorized("JWT token is expired");
+      throw CxException.unauthorized("JWT token is expired");
     } catch (UnsupportedJwtException e) {
       log.error("JWT token is unsupported: {}", e.getMessage());
-      throw BxException.unauthorized("JWT token is unsupported");
+      throw CxException.unauthorized("JWT token is unsupported");
     } catch (IllegalArgumentException e) {
       log.error("JWT claims string is empty: {}", e.getMessage());
-      throw BxException.unauthorized("JWT claims string is empty");
+      throw CxException.unauthorized("JWT claims string is empty");
     }
   }
 

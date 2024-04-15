@@ -5,7 +5,7 @@ import com.chris.ims.entity.SubEntity;
 import com.chris.ims.entity.annotations.Keyword;
 import com.chris.ims.entity.annotations.Parent;
 import com.chris.ims.entity.annotations.Res;
-import com.chris.ims.entity.exception.BxException;
+import com.chris.ims.entity.exception.CxException;
 import com.chris.ims.invoice.Invoice;
 import com.chris.ims.item.Item;
 import com.chris.ims.unit.Unit;
@@ -68,7 +68,7 @@ public class InvoiceItemDetail extends SubEntity {
     }
     
     if (!isValidUnit)
-      throw BxException.badRequest(getClass(), "unit", "unit is not valid");
+      throw CxException.badRequest(getClass(), "unit", "unit is not valid");
   }
 
   public void setItem(Item item) {

@@ -1,6 +1,6 @@
 package com.chris.ims.entity;
 
-import com.chris.ims.entity.exception.BxException;
+import com.chris.ims.entity.exception.CxException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -21,11 +21,11 @@ public interface AbstractEntityFacade<T extends AbstractEntity> {
       return entity;
     } catch (NoSuchMethodException e) {
       log.error("could not instantiate entity of " + getEntityClass().getSimpleName() + ": " + e.getMessage(), e);
-      log.error("entity " + getEntityClass().getSimpleName() + " must have a no-args constructor");
-      throw BxException.unexpected(e);
+      log.error("entity {} must have a no-args constructor", getEntityClass().getSimpleName());
+      throw CxException.unexpected(e);
     } catch (Exception e) {
       log.error("could not instantiate entity of " + getEntityClass().getSimpleName() + ": " + e.getMessage(), e);
-      throw BxException.unexpected(e);
+      throw CxException.unexpected(e);
     }
   }
 
@@ -38,7 +38,7 @@ public interface AbstractEntityFacade<T extends AbstractEntity> {
 
   default T findById(Long id) {
     return getRepository().findById(id)
-            .orElseThrow(BxException.xNotFound(getEntityClass(), id));
+            .orElseThrow(CxException.xNotFound(getEntityClass(), id));
   }
 
   default <S extends T> T save(S entity) {
@@ -97,6 +97,10 @@ public interface AbstractEntityFacade<T extends AbstractEntity> {
 
   default Page<T> searchQuery(String query, int page, int size) {
     return searchQuery(query, PageRequest.of(page, size));
+  }
+
+  default DbTable getTable() {
+    return DbTable.byCode(getEntityClass());
   }
 
   AbstractEntityRepository<T> getRepository();

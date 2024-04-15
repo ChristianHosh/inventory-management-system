@@ -2,8 +2,8 @@ package com.chris.ims.entity.exception;
 
 import org.springframework.http.HttpStatus;
 
-class BxNotFoundException extends BxException {
-  protected BxNotFoundException(String message) {
+class CxNotFoundException extends CxException {
+  protected CxNotFoundException(String message) {
     super(message);
   }
 

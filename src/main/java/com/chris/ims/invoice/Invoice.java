@@ -4,10 +4,12 @@ import com.chris.ims.Resource;
 import com.chris.ims.contact.Contact;
 import com.chris.ims.contact.ContactType;
 import com.chris.ims.entity.AbstractEntity;
+import com.chris.ims.entity.BooleanFld;
+import com.chris.ims.entity.DbTable;
 import com.chris.ims.entity.annotations.Keyword;
 import com.chris.ims.entity.annotations.Res;
 import com.chris.ims.entity.annotations.SubEntityList;
-import com.chris.ims.entity.exception.BxException;
+import com.chris.ims.entity.exception.CxException;
 import com.chris.ims.entity.utils.CResources;
 import com.chris.ims.invoice.itemdetail.InvoiceItemDetail;
 import com.chris.ims.warehouse.Warehouse;
@@ -31,6 +33,13 @@ public class Invoice extends AbstractEntity {
   public static final int F_WAREHOUSE = CResources.create("warehouse");
   public static final int F_STATUS = CResources.create("status");
   public static final int F_ITEM_DETAILS = Resource.F_INVOICE_ITEM_DETAILS;
+
+  public static void scripts(DbTable table) {
+    BooleanFld statusIsPending = table.findField(F_STATUS).expEQ(InvoiceStatus.PENDING);
+    table.getFields().values().forEach(
+            fld -> fld.setEnabled(statusIsPending)
+    );
+  }
 
   @Res("customer")
   @Keyword
@@ -66,10 +75,10 @@ public class Invoice extends AbstractEntity {
     super.validate();
 
     if (!customer.getField(Contact.F_TYPE).equals(ContactType.CUSTOMER))
-      throw BxException.badRequest(getClass(), "customer", "type must be CUSTOMER");
+      throw CxException.badRequest(getClass(), "customer", "type must be CUSTOMER");
 
     if (!salesman.getField(Contact.F_TYPE).equals(ContactType.EMPLOYEE))
-      throw BxException.badRequest(getClass(), "salesman", "type must be EMPLOYEE");
+      throw CxException.badRequest(getClass(), "salesman", "type must be EMPLOYEE");
 
     validateAfterPosting();
   }
@@ -85,7 +94,7 @@ public class Invoice extends AbstractEntity {
             Double invoiceItemQuantity = invoiceUnitFactor * invoiceItemDetail.getQuantity();
 
             if (warehouseItemDetail.getQuantity() < invoiceItemQuantity)
-              throw BxException.badRequest(getClass(),
+              throw CxException.badRequest(getClass(),
                       "item quantity on detail [" + invoiceItemDetail.getId() + "]",
                       "must be less than or equal to stock");
           }
@@ -93,7 +102,7 @@ public class Invoice extends AbstractEntity {
       }
 
       if (getTotal() <= 0) {
-        throw BxException.badRequest(getClass(), "total", "must be greater than 0");
+        throw CxException.badRequest(getClass(), "total", "must be greater than 0");
       }
     }
   }

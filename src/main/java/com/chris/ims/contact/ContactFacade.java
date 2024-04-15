@@ -3,7 +3,7 @@ package com.chris.ims.contact;
 import com.chris.ims.entity.AbstractEntity;
 import com.chris.ims.entity.AbstractEntityFacade;
 import com.chris.ims.entity.AbstractEntityRepository;
-import com.chris.ims.entity.exception.BxException;
+import com.chris.ims.entity.exception.CxException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -35,6 +35,6 @@ public class ContactFacade implements AbstractEntityFacade<Contact> {
     if (group.equalsIgnoreCase(Contact.GROUP_EMPLOYEE))
       return repository.searchQueryIsCustomer(query, request);
 
-    throw BxException.badRequest(getEntityClass(), "unknown group code", group);
+    throw CxException.badRequest(getEntityClass(), "unknown group code", group);
   }
 }

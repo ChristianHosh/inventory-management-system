@@ -1,6 +1,6 @@
 package com.chris.ims.entity.security;
 
-import com.chris.ims.entity.exception.BxException;
+import com.chris.ims.entity.exception.CxException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -44,7 +44,7 @@ class AuthFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
       }
     } catch (Exception e) {
-      BxException exception = BxException.unauthorized("invalid token");
+      CxException exception = CxException.unauthorized("invalid token");
       exception.addSuppressed(e);
       throw exception;
     }

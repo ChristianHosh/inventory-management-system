@@ -23,5 +23,6 @@ public class Project {
         table.add(field, CResources.keyOf(res.value()));
       }
     }
+    table.runScripts();
   }
 }

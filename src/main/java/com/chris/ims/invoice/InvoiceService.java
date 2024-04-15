@@ -1,7 +1,7 @@
 package com.chris.ims.invoice;
 
 import com.chris.ims.contact.ContactFacade;
-import com.chris.ims.entity.exception.BxException;
+import com.chris.ims.entity.exception.CxException;
 import com.chris.ims.invoice.itemdetail.InvoiceItemDetail;
 import com.chris.ims.invoice.itemdetail.InvoiceItemDetailDto;
 import com.chris.ims.invoice.itemdetail.InvoiceItemDetailFacade;
@@ -93,7 +93,7 @@ class InvoiceService {
     Invoice invoice = invoiceFacade.findById(id);
 
     if (!invoice.isPending())
-      throw BxException.badRequest(Invoice.class, "invoice must be pending to post");
+      throw CxException.badRequest(Invoice.class, "invoice must be pending to post");
 
     invoice.setStatus(InvoiceStatus.POSTED);
     return invoiceFacade.save(invoice).toDto();
@@ -103,7 +103,7 @@ class InvoiceService {
     Invoice invoice = invoiceFacade.findById(id);
 
     if (invoice.isPending())
-      throw BxException.badRequest(Invoice.class, "invoice must be posted to cancel");
+      throw CxException.badRequest(Invoice.class, "invoice must be posted to cancel");
 
     invoice.setStatus(InvoiceStatus.CANCELED);
     return invoiceFacade.save(invoice).toDto();

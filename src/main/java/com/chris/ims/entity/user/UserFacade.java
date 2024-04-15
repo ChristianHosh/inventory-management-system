@@ -2,7 +2,7 @@ package com.chris.ims.entity.user;
 
 import com.chris.ims.entity.AbstractEntityFacade;
 import com.chris.ims.entity.AbstractEntityRepository;
-import com.chris.ims.entity.exception.BxException;
+import com.chris.ims.entity.exception.CxException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +15,7 @@ public class UserFacade implements AbstractEntityFacade<User> {
   @Override
   public <S extends User> User delete(S entity) {
     if (entity.getString(User.F_USERNAME).equalsIgnoreCase("ADMIN"))
-      throw BxException.badRequest(getEntityClass(), "can't delete admin user");
+      throw CxException.badRequest(getEntityClass(), "can't delete admin user");
 
     return AbstractEntityFacade.super.delete(entity);
   }
@@ -36,6 +36,6 @@ public class UserFacade implements AbstractEntityFacade<User> {
 
   public User findByUsername(String username) {
     return repository.findByUsername(username)
-            .orElseThrow(BxException.xNotFound(getEntityClass(), username));
+            .orElseThrow(CxException.xNotFound(getEntityClass(), username));
   }
 }

@@ -2,13 +2,13 @@ package com.chris.ims.entity.exception;
 
 import org.springframework.http.HttpStatus;
 
-class BxUnauthorizedException extends BxException {
-  public BxUnauthorizedException(String message) {
+class CxConflictException extends CxException {
+  protected CxConflictException(String message) {
     super(message);
   }
 
   @Override
   public HttpStatus getStatus() {
-    return HttpStatus.UNAUTHORIZED;
+    return HttpStatus.CONFLICT;
   }
 }

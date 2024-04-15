@@ -19,15 +19,15 @@ class ControllerExceptionHandler {
     return ResponseEntity.status(status).body(new ApiError(status, message, isSevere));
   }
 
-  public ResponseEntity<ApiError> buildErrorResponse(@NotNull BxException exception) {
+  public ResponseEntity<ApiError> buildErrorResponse(@NotNull CxException exception) {
     return buildErrorResponse(exception, exception.getStatus());
   }
 
-  public ResponseEntity<ApiError> buildErrorResponse(@NotNull BxException exception, HttpStatus status) {
-    return buildErrorResponse(exception, status, exception instanceof BxSevereException);
+  public ResponseEntity<ApiError> buildErrorResponse(@NotNull CxException exception, HttpStatus status) {
+    return buildErrorResponse(exception, status, exception instanceof CxSevereException);
   }
 
-  public ResponseEntity<ApiError> buildErrorResponse(@NotNull BxException exception, HttpStatus status, Boolean isSevere) {
+  public ResponseEntity<ApiError> buildErrorResponse(@NotNull CxException exception, HttpStatus status, Boolean isSevere) {
     if (Boolean.TRUE.equals(isSevere))
       log.error(exception.getMessage(), exception.getException());
     else
@@ -36,14 +36,14 @@ class ControllerExceptionHandler {
     return buildErrorResponse(status, exception.getMessage(), isSevere);
   }
 
-  @ExceptionHandler(BxException.class)
-  public ResponseEntity<ApiError> handleBxExceptions(BxException exception) {
+  @ExceptionHandler(CxException.class)
+  public ResponseEntity<ApiError> handleBxExceptions(CxException exception) {
     return buildErrorResponse(exception);
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity<ApiError> handleMethodArgumentNotValid(MethodArgumentNotValidException exception) {
-    return buildErrorResponse(BxException.hardcoded(getFieldErrors(exception)), HttpStatus.BAD_REQUEST, false);
+    return buildErrorResponse(CxException.hardcoded(getFieldErrors(exception)), HttpStatus.BAD_REQUEST, false);
   }
 
   private String getFieldErrors(@NotNull MethodArgumentNotValidException exception) {
@@ -54,12 +54,12 @@ class ControllerExceptionHandler {
 
   @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
   public ResponseEntity<ApiError> handleHttpRequestMethodNotSupported(@NotNull HttpRequestMethodNotSupportedException exception) {
-    return buildErrorResponse(BxException.hardcoded(exception.getMessage()), HttpStatus.METHOD_NOT_ALLOWED, false);
+    return buildErrorResponse(CxException.hardcoded(exception.getMessage()), HttpStatus.METHOD_NOT_ALLOWED, false);
   }
 
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ApiError> handleUnexpectedExceptions(Exception exception) {
-    return buildErrorResponse(BxException.unexpected(exception));
+    return buildErrorResponse(CxException.unexpected(exception));
   }
 
 }

@@ -2,7 +2,7 @@ package com.chris.ims.entity;
 
 import com.chris.ims.entity.annotations.Keyword;
 import com.chris.ims.entity.annotations.Res;
-import com.chris.ims.entity.exception.BxException;
+import com.chris.ims.entity.exception.CxException;
 import com.chris.ims.entity.utils.Resource;
 import io.swagger.v3.core.util.ReflectionUtils;
 import jakarta.persistence.*;
@@ -15,6 +15,7 @@ import org.hibernate.annotations.SoftDelete;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.proxy.HibernateProxy;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -25,13 +26,18 @@ import java.util.StringJoiner;
 @Setter(AccessLevel.PRIVATE)
 @SoftDelete(columnName = "deleted")
 @MappedSuperclass
-public abstract class AbstractEntity {
+public abstract class AbstractEntity implements Serializable {
 
   public static final String GROUP_ALL = "all";
   public static final int F_ID = Resource.F_ID;
   public static final int F_CREATED_ON = Resource.F_CREATED_ON;
   public static final int F_UPDATED_ON = Resource.F_UPDATED_ON;
 
+  public static void scripts(DbTable table) {
+    table.findField(F_ID).setEnabled(false);
+    table.findField(F_CREATED_ON).setEnabled(false);
+    table.findField(F_UPDATED_ON).setEnabled(false);
+  }
 
   protected AbstractEntity() {
     table = DbTable.byCode(getClass());
@@ -103,7 +109,7 @@ public abstract class AbstractEntity {
 
   void validateInternal() {
     log.info("validating: " + this);
-    for (EntField field : getTable().getFields()) {
+    for (EntField field : getTable().getFields().values()) {
       validateInternal(field);
     }
     validate();
@@ -128,13 +134,13 @@ public abstract class AbstractEntity {
     if (field.isColumn()) {
       Column column = field.getColumn();
       if (!column.nullable() && isNull(field) && !field.isField(F_ID, F_CREATED_ON, F_UPDATED_ON))
-        throw BxException.missing(this, field);
+        throw CxException.missing(this, field);
     }
 
     if (field.isJoinColumn()) {
       JoinColumn joinColumn = field.getJoinColumn();
       if (!joinColumn.nullable() && isNull(field))
-        throw BxException.missing(this, field);
+        throw CxException.missing(this, field);
     }
 
     validate(field);
@@ -145,9 +151,7 @@ public abstract class AbstractEntity {
   }
 
   public void fieldChanged(EntField field, Object newValue, Object oldValue) {
-    if (field.isField(F_ID, F_CREATED_ON, F_UPDATED_ON)) {
-      throw BxException.disabled(this, field);
-    }
+
   }
 
   private void validateCollection(EntField field, Iterable<?> collection) {
@@ -220,7 +224,7 @@ public abstract class AbstractEntity {
       this.mode = Mode.EDIT;
       return (T) this;
     } else {
-      throw BxException.badRequest(getClass(), cantEditMessage());
+      throw CxException.badRequest(getClass(), cantEditMessage());
     }
   }
 
@@ -229,7 +233,7 @@ public abstract class AbstractEntity {
     try {
       Class<? extends AbstractEntity> tClass = getClass();
       AbstractEntity clone = tClass.getConstructor().newInstance();
-      for (EntField field : getTable().getFields()) {
+      for (EntField field : getTable().getFields().values()) {
         field.set(clone, field.get(this));
       }
       return (T) clone;

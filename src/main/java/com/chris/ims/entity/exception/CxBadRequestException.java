@@ -2,8 +2,8 @@ package com.chris.ims.entity.exception;
 
 import org.springframework.http.HttpStatus;
 
-class BxBadRequestException extends BxException {
-  protected BxBadRequestException(String message) {
+class CxBadRequestException extends CxException {
+  protected CxBadRequestException(String message) {
     super(message);
   }
 

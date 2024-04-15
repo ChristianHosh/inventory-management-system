@@ -1,20 +1,22 @@
 package com.chris.ims.entity;
 
 import com.chris.ims.entity.annotations.SubEntityList;
-import com.chris.ims.entity.exception.BxException;
+import com.chris.ims.entity.exception.CxException;
 import com.chris.ims.entity.utils.CResources;
 import jakarta.persistence.Column;
 import jakarta.persistence.JoinColumn;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 @Slf4j
 @Getter
+@SuppressWarnings("unused")
 public class EntField {
 
   private final DbTable table;
@@ -23,7 +25,8 @@ public class EntField {
   private final Class<?> type;
   private final int id;
 
-  private final Set<Annotation> annotations;
+  private boolean enabled;
+  private final List<BooleanFld> enablers;
 
   EntField(DbTable table, Field field, int id) {
     field.trySetAccessible();
@@ -33,22 +36,50 @@ public class EntField {
     this.id = id;
     this.fieldName = field.getName();
     this.type = field.getType();
-    this.annotations = Set.of(field.getDeclaredAnnotations());
+    this.enabled = true;
+    this.enablers = new ArrayList<>();
   }
 
   boolean isSubEntity() {
     return field.isAnnotationPresent(SubEntityList.class) && (Iterable.class.isAssignableFrom(field.getType()));
   }
 
+  public boolean isEnabled(AbstractEntity entity) {
+    if (!enabled)
+      return false;
+
+    for (BooleanFld booleanFld : enablers) {
+      if (!booleanFld.isTrue(entity))
+        return false;
+    }
+    return true;
+  }
+
+  @SuppressWarnings("all")
+  public void setEnabled(boolean enabled) {
+    this.enabled = enabled;
+  }
+
+  public void setEnabled(BooleanFld booleanFld) {
+    this.enablers.add(booleanFld);
+  }
+
+  public void setEnabled(BooleanFld... booleanFlds) {
+    this.enablers.addAll(Arrays.asList(booleanFlds));
+  }
+
   public String getLabel() {
     return CResources.getValue(id);
   }
 
+  public boolean isField(int id) {
+    return this.id == id;
+  }
+
   public boolean isField(int... ids) {
     for (int i : ids) {
-      if (i == this.id) {
+      if (isField(i))
         return true;
-      }
     }
     return false;
   }
@@ -58,7 +89,7 @@ public class EntField {
       return field.get(entity);
     } catch (IllegalAccessException e) {
       log.error("error getting field [" + this + "] " + e.getMessage(), e);
-      throw BxException.unexpected(e);
+      throw CxException.unexpected(e);
     }
   }
 
@@ -67,6 +98,10 @@ public class EntField {
   }
 
   private void setInternal(AbstractEntity entity, Object value) {
+    if (!isEnabled(entity)) {
+      throw CxException.disabled(entity, this);
+    }
+
     Object oldValue = get(entity);
     if (Objects.equals(oldValue, value))
       return;
@@ -74,26 +109,71 @@ public class EntField {
     entity.validate(this);
     entity.fieldChanged(this, value, oldValue);
     try {
-      field.set(entity, value);
+      this.field.set(entity, value);
     } catch (IllegalAccessException e) {
       log.error("error setting field [" + this + "] " + e.getMessage(), e);
-      throw BxException.unexpected(e);
+      throw CxException.unexpected(e);
     }
   }
 
   public boolean isColumn() {
-    return field.isAnnotationPresent(Column.class);
+    return this.field.isAnnotationPresent(Column.class);
   }
 
   public Column getColumn() {
-    return field.getAnnotation(Column.class);
+    return this.field.getAnnotation(Column.class);
   }
 
   public boolean isJoinColumn() {
-    return field.isAnnotationPresent(JoinColumn.class);
+    return this.field.isAnnotationPresent(JoinColumn.class);
   }
 
   public JoinColumn getJoinColumn() {
-    return field.getAnnotation(JoinColumn.class);
+    return this.field.getAnnotation(JoinColumn.class);
+  }
+
+  @Override
+  public String toString() {
+    return "EntField: TABLE=" + table + ", FIELD=" + field + ", ID=" + id;
+  }
+
+  private BooleanFld exp(BooleanFld.Operation operation, Object value) {
+    return new BooleanFld(this, operation, value);
+  }
+
+  public BooleanFld expIsNull() {
+    return expEQ(null);
+  }
+
+  public BooleanFld expNotNull() {
+    return expNE(null);
+  }
+
+  public BooleanFld expIn(Object... values) {
+    return exp(BooleanFld.Operation.IN_LIST, Arrays.asList(values));
+  }
+
+  public BooleanFld expEQ(Object value) {
+    return exp(BooleanFld.Operation.EQ, value);
+  }
+
+  public BooleanFld expNE(Object value) {
+    return exp(BooleanFld.Operation.NE, value);
+  }
+
+  public BooleanFld expLT(Object value) {
+    return exp(BooleanFld.Operation.LT, value);
+  }
+
+  public BooleanFld expLE(Object value) {
+    return exp(BooleanFld.Operation.LE, value);
+  }
+
+  public BooleanFld expGT(Object value) {
+    return exp(BooleanFld.Operation.GT, value);
+  }
+
+  public BooleanFld expGE(Object value) {
+    return exp(BooleanFld.Operation.GE, value);
   }
 }

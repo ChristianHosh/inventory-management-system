@@ -3,7 +3,7 @@ package com.chris.ims.item;
 import com.chris.ims.entity.EntField;
 import com.chris.ims.entity.SpecEntity;
 import com.chris.ims.entity.annotations.Res;
-import com.chris.ims.entity.exception.BxException;
+import com.chris.ims.entity.exception.CxException;
 import com.chris.ims.entity.utils.CResources;
 import com.chris.ims.unit.Unit;
 import jakarta.persistence.*;
@@ -35,7 +35,7 @@ public class Item extends SpecEntity {
     super.validate(field);
 
     if (field.isField(F_BASE_UNIT) && getEntity(field).isNull(Unit.F_BELONGS_TO)) {
-      throw BxException.badRequest(getClass(), "base unit must be a header");
+      throw CxException.badRequest(getClass(), "base unit must be a header");
     }
   }
 

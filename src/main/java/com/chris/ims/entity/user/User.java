@@ -19,6 +19,7 @@ public class User extends SpecEntity {
 
   public static final int F_USERNAME = CResources.create("username");
   public static final int F_PASSWORD = CResources.create("password");
+  public static final int F_DEFAULT_LOCALE = CResources.create("defaultLocale");
 
   @Res("username")
   @Column(name = "username", length = 30, unique = true)
@@ -27,6 +28,10 @@ public class User extends SpecEntity {
   @Res("password")
   @Column(name = "password", length = 100)
   private String password;
+
+  @Res("defaultLocale")
+  @Column(name = "default_locale", length = 2, nullable = false)
+  private String defaultLocale = "en";
 
   public UserDto toDto() {
     return new UserDto(this);

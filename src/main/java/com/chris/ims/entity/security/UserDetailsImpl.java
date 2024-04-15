@@ -3,27 +3,27 @@ package com.chris.ims.entity.security;
 import com.chris.ims.entity.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
 
-record UserDetailsImpl(
-    
-    @Getter
-    User user,
-    
-    Long id,
-    
-    String username,
-    
-    @JsonIgnore
-    String password,
-    
-    @Getter
-    List<? extends GrantedAuthority> authorities
-    
-) implements UserDetails {
+@Getter
+@RequiredArgsConstructor
+public class UserDetailsImpl implements UserDetails {
+
+  private final User user;
+
+  private final Long id;
+
+  private final String username;
+
+  @JsonIgnore
+  private final String password;
+
+  @Getter
+  private final List<? extends GrantedAuthority> authorities;
   
   public static UserDetailsImpl from(User user, List<? extends GrantedAuthority> authorities) {
     return new UserDetailsImpl(
@@ -41,12 +41,12 @@ record UserDetailsImpl(
 
   @Override
   public String getUsername() {
-    return user.getField(User.F_USERNAME);
+    return user.getString(User.F_USERNAME);
   }
   
   @Override
   public String getPassword() {
-    return user.getField(User.F_USERNAME);
+    return user.getString(User.F_USERNAME);
   }
 
   @Override
