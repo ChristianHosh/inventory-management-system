@@ -9,7 +9,7 @@ import java.io.Serializable;
 /**
  * Request DTO for {@link Contact}
  */
-record ContactRequest(
+public record ContactRequest(
 
         @NotNull(groups = RequireAll.class, message = "name can't be null")
         @NotBlank(groups = RequireAll.class, message = "name can't be blank")
